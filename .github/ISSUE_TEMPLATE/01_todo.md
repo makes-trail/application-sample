@@ -1,6 +1,6 @@
 ---
 name: To do
-name: タスクの内容を記載する
+about: タスクの内容を記載する
 title: ''
 labels: to do
 assignees: ''
