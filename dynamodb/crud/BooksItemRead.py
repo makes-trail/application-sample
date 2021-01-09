@@ -1,3 +1,9 @@
+'''
+テーブルにある項目を取得する。
+
+取得時にはプライマリキーを指定する。
+'''
+
 from pprint import pprint
 import json
 import boto3
@@ -28,4 +34,4 @@ if __name__ == '__main__':
     book = get_book(sample_isbn)
     if book:
         print("Get book succeeded:")
-        pprint(book, sort_dicts=False)
+        pprint(book)
