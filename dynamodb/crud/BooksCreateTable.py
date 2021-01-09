@@ -1,3 +1,13 @@
+'''
+テーブルを作成する。
+
+プライマリキーには、以下の２種類がとれる。
+1. バーティションキーのみ
+2. パーティションキーとソートキーの組み合わせ
+
+今回は1の「パーティションキーのみ」で作成する。
+'''
+
 import boto3
 
 
@@ -21,7 +31,7 @@ def create_book_table(dynamodb=None):
         AttributeDefinitions=[
             {
                 'AttributeName': 'isbn',
-                'AttributeType': 'N'
+                'AttributeType': 'N'  # 数字（Number）型
             },
         ],
         ProvisionedThroughput={
