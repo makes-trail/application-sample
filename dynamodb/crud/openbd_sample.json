@@ -1,0 +1,172 @@
+[
+  {
+    "onix": {
+      "RecordReference": "9784003202524",
+      "NotificationType": "03",
+      "ProductIdentifier": {
+        "ProductIDType": "15",
+        "IDValue": "9784003202524"
+      },
+      "DescriptiveDetail": {
+        "ProductComposition": "00",
+        "ProductForm": "BZ",
+        "Measure": [
+          {
+            "MeasureType": "01",
+            "Measurement": "15",
+            "MeasureUnitCode": "mm"
+          },
+          {
+            "MeasureType": "02",
+            "Measurement": "0",
+            "MeasureUnitCode": "mm"
+          }
+        ],
+        "Collection": {
+          "CollectionType": "10",
+          "TitleDetail": {
+            "TitleType": "01",
+            "TitleElement": [
+              {
+                "TitleElementLevel": "02",
+                "TitleText": {
+                  "content": "岩波文庫"
+                }
+              }
+            ]
+          }
+        },
+        "TitleDetail": {
+          "TitleType": "01",
+          "TitleElement": {
+            "TitleElementLevel": "01",
+            "TitleText": {
+              "collationkey": "アキューセイデンキョウジンニッキタジュウニヘン",
+              "content": "阿Q正伝・狂人日記 他十二篇"
+            }
+          }
+        },
+        "Contributor": [
+          {
+            "SequenceNumber": "1",
+            "ContributorRole": [
+              "B06"
+            ],
+            "PersonName": {
+              "content": "竹内 好"
+            }
+          },
+          {
+            "SequenceNumber": "2",
+            "ContributorRole": [
+              "A01"
+            ],
+            "PersonName": {
+              "content": "魯迅"
+            }
+          }
+        ],
+        "Language": [
+          {
+            "LanguageRole": "01",
+            "LanguageCode": "jpn",
+            "CountryCode": "JP"
+          }
+        ],
+        "Extent": [
+          {
+            "ExtentType": "11",
+            "ExtentValue": "248",
+            "ExtentUnit": "03"
+          }
+        ]
+      },
+      "CollateralDetail": {
+        "TextContent": [
+          {
+            "TextType": "03",
+            "ContentAudience": "00",
+            "Text": "魯迅が中国社会の救い難い病根と感じたもの、それは儒教を媒介とする封建社会であった。狂人の異常心理を通してその力を描く「狂人日記」。阿Qはその病根を作りまたその中で殺される人間である。こうしたやりきれない暗さの自覚から中国の新しい歩みは始まった。"
+          }
+        ],
+        "SupportingResource": [
+          {
+            "ResourceContentType": "01",
+            "ContentAudience": "01",
+            "ResourceMode": "03",
+            "ResourceVersion": [
+              {
+                "ResourceForm": "02",
+                "ResourceVersionFeature": [
+                  {
+                    "ResourceVersionFeatureType": "01",
+                    "FeatureValue": "D502"
+                  },
+                  {
+                    "ResourceVersionFeatureType": "04",
+                    "FeatureValue": "9784003202524.jpg"
+                  }
+                ],
+                "ResourceLink": "https://cover.openbd.jp/9784003202524.jpg"
+              }
+            ]
+          }
+        ]
+      },
+      "PublishingDetail": {
+        "Imprint": {
+          "ImprintIdentifier": [
+            {
+              "ImprintIDType": "19"
+            }
+          ],
+          "ImprintName": "岩波書店"
+        },
+        "PublishingDate": [
+          {
+            "PublishingDateRole": "01",
+            "Date": ""
+          }
+        ]
+      },
+      "ProductSupply": {
+        "SupplyDetail": {
+          "ReturnsConditions": {
+            "ReturnsCodeType": "04",
+            "ReturnsCode": "02"
+          },
+          "ProductAvailability": "99"
+        }
+      }
+    },
+    "hanmoto": {
+      "datecreated": "2015-08-20 11:22:57",
+      "reviews": [
+        {
+          "post_user": "genkina",
+          "reviewer": "佐藤賢（首都大学東京助教授）",
+          "source_id": 19,
+          "kubun_id": 1,
+          "source": "東京新聞／中日新聞",
+          "choyukan": "",
+          "han": "",
+          "link": "",
+          "appearance": "2014-03-23",
+          "gou": ""
+        }
+      ],
+      "dateshuppan": "2003-4-4",
+      "datemodified": "2015-08-20 11:22:57"
+    },
+    "summary": {
+      "isbn": "9784003202524",
+      "title": "阿Q正伝・狂人日記 他十二篇",
+      "volume": "",
+      "series": "",
+      "publisher": "岩波書店",
+      "pubdate": "2003-4-4",
+      "cover": "https://cover.openbd.jp/9784003202524.jpg",
+      "author": "竹内好／翻訳 魯迅／著"
+    }
+  }
+]
