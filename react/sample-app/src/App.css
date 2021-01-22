@@ -3,7 +3,7 @@
 }
 
 .App-logo {
-  height: 40vmin;
+  height: 15vh;
   pointer-events: none;
 }
 
@@ -15,7 +15,7 @@
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  min-height: 20vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -35,4 +35,46 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.content {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.content form {
+  width: 60%;
+  margin: 40px auto;
+}
+
+.content form label {
+  text-align: left;
+  font-size: 1.2rem;
+  display: block;
+}
+
+.content form input {
+  width: 100%;
+  padding: 6px 10px;
+  margin: 0;
+  border: 2px solid #888888;
+  border-radius: 6px;
+  box-sizing: border-box;
+  display: block;
+}
+
+.content form button {
+  background: #282c34;
+  color: #61dafb;
+  border: 0;
+  padding: 8px 12px;
+  margin: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.content form .text-error {
+  color: #ff0000;
+  display: block;
 }
