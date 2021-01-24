@@ -37,6 +37,10 @@
   }
 }
 
+.title span {
+  display: inline-block;
+}
+
 .content {
   max-width: 600px;
   margin: 0 auto;
