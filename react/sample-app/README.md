@@ -2,6 +2,68 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## 環境構築
+
+Node.jsとnpmをインストールする。
+
+1. https://nodejs.org/ja/ からLTSがついているバージョンをダウンロード&インストール
+2. インストールされたか確認
+
+```
+$ node -v
+$ npm -v
+```
+
+## 必要なパッケージをインストール
+
+npmを使用してパッケージを`/node_modules`配下にインストールする。
+
+```
+cd react
+cd sample-app
+npm install
+```
+
+## JSON ServerでAPIモックを作成
+
+[JSON Server](https://github.com/typicode/json-server)を用いて、デモ用のAPIモックサーバをローカルに立てる。
+
+```
+npx json-server --watch ./mock/db.json --port 3333
+```
+
+ブラウザから http://localhost:3333/fetch-isbn-summary?isbn=9784905325055 にアクセスして、JSONを取得できることを確認。
+
+## Reactアプリを起動
+
+JSON Serverで立てたAPIモックはそのままの状態で、Reactアプリを起動する。
+```
+npm run start
+```
+
+http://localhost:3000 が自動で開く。
+
+## 環境変数
+
+アプリ起動時に埋め込む環境変数を`.env.development`(ローカル開発用)と`.env.staging`(準本番環境用)で定義している。
+
+### `npm run start`
+
+ローカル開発モードでアプリを起動する。
+
+### `npm run start:st`
+
+準本番環境用モードでアプリを起動する。
+
+### `npm run build`
+
+ローカル開発用のアプリを`/build`配下にビルドする。
+
+### `npm run build:st`
+
+準本番環境用のアプリを`/build`配下にビルドする。\
+実際にはこのコマンドで`/build`配下に生成されたファイルたちをS3にアップロードして静的ホスティングする。
+
 ## Available Scripts
 
 In the project directory, you can run:
