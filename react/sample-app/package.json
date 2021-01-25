@@ -20,6 +20,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start:st": "dotenv -e .env.staging react-scripts start",
     "build": "react-scripts build",
     "build:st": "dotenv -e .env.staging react-scripts build",
     "test": "react-scripts test",
