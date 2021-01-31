@@ -24,7 +24,7 @@ const FetchBook: React.FC = () => {
           });
           if (res.status !== 200) {
             setIsPending(false);
-            setMessage("サーバから正しいステータスが返ってこなかったよ。ぴえん");
+            setMessage("サーバから正しいステータスコードが返ってこなかったよ。ぴえん");
             console.log("status code not 200");
             return;
           }
@@ -44,7 +44,7 @@ const FetchBook: React.FC = () => {
             console.log("fetch aborted!");
           } else {
             setMessage("予期せぬエラーが出たよ。ぴえん");
-            // console.log(`Error:\n${err.message}`);
+            console.error(`Error:\n${err.message}`);
           }
         }
       }, 2000
