@@ -1,8 +1,8 @@
 {
-  "name": "application-sample",
+  "name": "dataset",
   "version": "1.0.0",
-  "description": "アプリ開発準備",
-  "main": "index.js",
+  "description": "## Project setup ### Install Node.js packages ``` npm install ```",
+  "main": "create-dataset.js",
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch"
