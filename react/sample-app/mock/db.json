@@ -1,0 +1,18 @@
+{
+  "fetch-isbn-summary": [
+    {
+      "isbn": "9784774142043",
+      "title": "Webを支える技術 : HTTP、URI、HTML、そしてREST",
+      "author": "山本陽平／著",
+      "publisher": "技術評論社",
+      "cover": "https://cover.openbd.jp/9784774142043.jpg"
+    },
+    {
+      "isbn": "9784905325055",
+      "title": "魔法の世紀",
+      "author": "落合陽一／著",
+      "publisher": "株式会社PLANETS／第二次惑星開発委員会",
+      "cover": "https://cover.openbd.jp/9784905325055.jpg"
+    }
+  ]
+}
