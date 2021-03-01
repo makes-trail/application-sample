@@ -1,0 +1,104 @@
+service: mt-sample
+
+provider:
+  name: aws
+  runtime: python3.8
+  lambdaHashingVersion: 20201221
+  stage: ${opt:stage, 'dev'}
+  region: us-west-2
+  logRetentionInDays: 30
+  versionFunctions: false
+  timeout: 20
+  deploymentBucket:
+    name: mt-sample-${self:provider.stage}-deployment
+
+#--------------------------------------------------------------------------------
+# packaging
+# https://www.serverless.com/framework/docs/providers/aws/guide/packaging/
+#--------------------------------------------------------------------------------
+package:
+  individually: true
+
+#--------------------------------------------------------------------------------
+# plugins
+# https://www.serverless.com/framework/docs/providers/aws/guide/plugins/
+#--------------------------------------------------------------------------------
+plugins:
+  - serverless-python-requirements
+
+#--------------------------------------------------------------------------------
+# variables
+# https://www.serverless.com/framework/docs/providers/aws/guide/variables/
+#--------------------------------------------------------------------------------
+custom:
+  dynamedbTableName: mt-sample-dev
+
+layers:
+  requirements:
+    package:
+      artifact: layers/artifact/requirements.zip
+    compatibleRuntimes:
+      - python3.8
+    retain: false
+
+#--------------------------------------------------------------------------------
+# functions
+# https://www.serverless.com/framework/docs/providers/aws/guide/functions/
+#--------------------------------------------------------------------------------
+functions:
+  hello:
+    handler: handler.hello
+    package:
+      exclude:
+        - '**'
+      include:
+        - handler.py
+  fetch-openbd-summary:
+    handler: main.handler
+    layers:
+      - {Ref: RequirementsLambdaLayer}
+    events:
+      - httpApi:
+        path: /fetch/{isbn}
+        method: get
+        cors: true
+    package:
+      artifact: functions/artifact/fetch_openbd_summary.zip
+  save-openbd-to-ddb:
+    handler: main.handler
+    layers:
+      - {Ref: RequirementsLambdaLayer}
+    environment:
+      DYNAMODB_TABLE: ${self:custom.dynamedbTableName}
+    events:
+      - httpApi:
+        path: /save/{isbn}
+        method: get
+        cors: true
+    package:
+      artifact: functions/artifact/save_openbd_to_ddb.zip
+
+#--------------------------------------------------------------------------------
+# resources
+# https://www.serverless.com/framework/docs/providers/aws/guide/resources/
+#--------------------------------------------------------------------------------
+resources:
+  Resources:
+    DynamoDBIamPolicy:
+      Type: AWS::IAM::Policy
+      Properties:
+        PolicyName: lambda-dynamodb
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:Query
+                - dynamodb:Scan
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:UpdateItem
+                - dynamodb:DeleteItem
+              Resource: arn:aws:dynamodb:*:*:table/*
+        Roles:
+          - Ref: IamRoleLambdaExecution
