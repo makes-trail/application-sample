@@ -37,12 +37,10 @@ for path in layers/*; do
     cd python
     docker run --rm -v $(pwd):/var/task -w /var/task lambci/lambda:build-python3.8 \
         pip install -r "$(basename $path)/requirements.txt" -t .
-
     cd ..
     zip -r9 "$(basename $path).zip" python && mv "$(basename $path).zip" "$curdir/layers/artifact"
 
     rm -rf $tempdir && echo "removed $tempdir"
-
     cd $curdir
 done
 wait
