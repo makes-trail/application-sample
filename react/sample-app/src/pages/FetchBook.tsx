@@ -10,7 +10,7 @@ const FetchBook: React.FC = () => {
   const [book, setBook] = useState<Book>();
 
   useEffect(() => {
-    const url = new URL(`${process.env.REACT_APP_SERVERLESS_ENDPOINT}/fetch-isbn-summary`);
+    const url = new URL(`${process.env.REACT_APP_API_ENDPOINT}/fetch-isbn-summary`);
     const params = new URLSearchParams();
     params.append("isbn", isbn);
     url.search = params.toString();
