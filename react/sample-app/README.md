@@ -36,60 +36,39 @@ npx json-server --watch ./mock/db.json --port 3333
 
 ## Reactアプリを起動
 
-JSON Serverで立てたAPIモックはそのままの状態で、Reactアプリを起動する。
+JSON Serverで立てたAPIモックはそのままの状態で、Reactアプリを起動する。（ローカル開発モード）
 ```
-npm run start
+npm run start:dev
 ```
 
 http://localhost:3000 が自動で開く。
 
 ## 環境変数
 
-アプリ起動時に埋め込む環境変数を`.env.development`(ローカル開発用)と`.env.staging`(準本番環境用)で定義している。
+アプリ起動時に埋め込む環境変数を`.env.development`(ローカル開発用)と`.env`(AWS開発環境用)で定義している。
 
-### `npm run start`
+### `npm run start:dev`
 
 ローカル開発モードでアプリを起動する。
 
-### `npm run start:st`
+### `npm run start`
 
-準本番環境用モードでアプリを起動する。
+AWS開発環境用モードでアプリを起動する。
 
 ### `npm run build`
 
-ローカル開発用のアプリを`/build`配下にビルドする。
+AWS開発環境用のアプリを`/build`配下にビルドする。\
+このコマンドで`/build`配下に生成されたファイルたちをS3にアップロードして静的ホスティングする。
 
-### `npm run build:st`
-
-準本番環境用のアプリを`/build`配下にビルドする。\
-実際にはこのコマンドで`/build`配下に生成されたファイルたちをS3にアップロードして静的ホスティングする。
 
 ## Available Scripts
 
 In the project directory, you can run:
 
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
 ### `npm test`
 
 Launches the test runner in the interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
 ### `npm run eject`
 
