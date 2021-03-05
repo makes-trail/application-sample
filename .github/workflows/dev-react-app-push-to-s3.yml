@@ -24,7 +24,7 @@ jobs:
       run: |
         cd ./react/sample-app
         touch .env
-        echo REACT_APP_API_ENDPOINT=${{ secrets.AWS_API_ENDOINT_DEV }} >> .env
+        echo REACT_APP_API_ENDPOINT=${{ secrets.AWS_API_ENDPOINT_DEV }} >> .env
         cat .env
 
     - name: npm ci, build
