@@ -38,7 +38,7 @@ for path in layers/*; do
 
     # install packages in python directory then zip it
     cd python
-    docker run --rm -v $(pwd):/var/task -w /var/task lambci/lambda:build-python3.8 \
+    docker run --rm -v `pwd -W`://var/task -w //var/task lambci/lambda:build-python3.8 \
         pip install -r "$(basename $path)/requirements.txt" -t .
     cd ..
     zip -r9 "$(basename $path).zip" python && mv "$(basename $path).zip" "$curdir/layers/artifact"
