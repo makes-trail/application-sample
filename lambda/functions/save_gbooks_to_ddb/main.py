@@ -5,13 +5,13 @@ import json
 
 
 # 取得したjsonデータから項目を挿入するための構造に整形
-def format_openbd(isbn: str, openbd_json: dict) -> dict:
-    if len(openbd_json) != 1:
-        print("The data fetched from OpenBD is empty")
+def format_gbooks(isbn: str, gbooks_json: dict) -> dict:
+    if gbooks_json["totalItems"] != 1:
+        print("The data fetched from GoogleBooks is empty")
         raise
-    output_dict = openbd_json[0]["summary"]
+    output_dict = gbooks_json["items"][0]["volumeInfo"]
     output_dict["isbn"] = isbn
-    output_dict["source"] = "openbd"
+    output_dict["source"] = "gbooks"
     print(output_dict)
     return output_dict
 
@@ -22,16 +22,16 @@ def handler(event: dict, context: dict) -> dict:
 
     try:
         isbn = event.get("pathParameters").get("isbn")
-        openbd_api_url = f"https://api.openbd.jp/v1/get?isbn={isbn}"
+        gbooks_api_url = f"https://www.googleapis.com/books/v1/volumes?q=isbn:{isbn}"
         headers = {"content-type": "application/json"}
-        res = requests.get(openbd_api_url, headers=headers, timeout=10.0)
+        res = requests.get(gbooks_api_url, headers=headers, timeout=10.0)
         data = res.json()
-        openbd_dict = format_openbd(isbn, data)
+        gbooks_dict = format_gbooks(isbn, data)
     
         dynamo = boto3.resource("dynamodb")
         table = dynamo.Table(table_name)
         table.put_item(
-            Item=openbd_dict
+            Item=gbooks_dict
         )
 
         return {

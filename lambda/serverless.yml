@@ -5,7 +5,10 @@ provider:
   runtime: python3.8
   lambdaHashingVersion: 20201221
   stage: ${opt:stage, 'dev'}
+  profile: ${opt:profile, 'default'}
   region: us-west-2
+  apiName: mt-sample-${self:provider.stage}-api
+  endpointType: REGIONAL
   logRetentionInDays: 30
   versionFunctions: false
   timeout: 20
@@ -58,10 +61,10 @@ functions:
     layers:
       - {Ref: RequirementsLambdaLayer}
     events:
-      - httpApi:
-        path: /fetch/{isbn}
-        method: get
-        cors: true
+      - http:
+          path: /fetch/{isbn}
+          method: get
+          cors: true
     package:
       artifact: functions/artifact/fetch_openbd_summary.zip
   save-openbd-to-ddb:
@@ -71,12 +74,25 @@ functions:
     environment:
       DYNAMODB_TABLE: ${self:custom.dynamedbTableName}
     events:
-      - httpApi:
-        path: /save/{isbn}
-        method: get
-        cors: true
+      - http:
+          path: /save-openbd/{isbn}
+          method: put
+          cors: true
     package:
       artifact: functions/artifact/save_openbd_to_ddb.zip
+  save-gbooks-to-ddb:
+    handler: main.handler
+    layers:
+      - {Ref: RequirementsLambdaLayer}
+    environment:
+      DYNAMODB_TABLE: ${self:custom.dynamedbTableName}
+    events:
+      - http:
+          path: /save-gbooks/{isbn}
+          method: put
+          cors: true
+    package:
+      artifact: functions/artifact/save_gbooks_to_ddb.zip
 
 #--------------------------------------------------------------------------------
 # resources

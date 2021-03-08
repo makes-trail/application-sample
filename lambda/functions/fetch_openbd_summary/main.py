@@ -38,11 +38,21 @@ def handler(event: dict, context: dict) -> dict:
 
         return {
             "statusCode": 200,
+            "headers": {
+              "Access-Control-Allow-Headers": "Content-Type",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Methods": "*"
+            },
             "body": json.dumps(response, ensure_ascii=False)
         }
     except Exception as e:
         print(e)
         return {
             "statusCode": 500,
+            "headers": {
+              "Access-Control-Allow-Headers": "Content-Type",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Methods": "*"
+            },
             "body": json.dumps("ERROR")
         }
