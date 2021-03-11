@@ -3,9 +3,8 @@ service: mt-sample
 provider:
   name: aws
   runtime: python3.8
-  lambdaHashingVersion: 20201221
-  stage: ${opt:stage, 'dev'}
-  profile: ${opt:profile, 'default'}
+  stage: ${opt:stage, self:custom.defaultStage}
+  profile: ${opt:profile, self:custom.defaultProfile}
   region: us-west-2
   apiName: mt-sample-${self:provider.stage}-api
   endpointType: REGIONAL
@@ -14,6 +13,8 @@ provider:
   timeout: 20
   deploymentBucket:
     name: mt-sample-${self:provider.stage}-deployment
+  iam:
+    role: myDefaultRole
 
 #--------------------------------------------------------------------------------
 # packaging
@@ -34,6 +35,8 @@ plugins:
 # https://www.serverless.com/framework/docs/providers/aws/guide/variables/
 #--------------------------------------------------------------------------------
 custom:
+  defaultStage: dev
+  defaultProfile: default
   dynamedbTableName: mt-sample-dev
 
 layers:
@@ -59,7 +62,7 @@ functions:
   fetch-openbd-summary:
     handler: main.handler
     layers:
-      - {Ref: RequirementsLambdaLayer}
+      - !Ref RequirementsLambdaLayer
     events:
       - http:
           path: /fetch/{isbn}
@@ -70,7 +73,7 @@ functions:
   save-openbd-to-ddb:
     handler: main.handler
     layers:
-      - {Ref: RequirementsLambdaLayer}
+      - !Ref RequirementsLambdaLayer
     environment:
       DYNAMODB_TABLE: ${self:custom.dynamedbTableName}
     events:
@@ -83,7 +86,7 @@ functions:
   save-gbooks-to-ddb:
     handler: main.handler
     layers:
-      - {Ref: RequirementsLambdaLayer}
+      - !Ref RequirementsLambdaLayer
     environment:
       DYNAMODB_TABLE: ${self:custom.dynamedbTableName}
     events:
@@ -100,21 +103,42 @@ functions:
 #--------------------------------------------------------------------------------
 resources:
   Resources:
-    DynamoDBIamPolicy:
-      Type: AWS::IAM::Policy
+    myDefaultRole:
+      Type: AWS::IAM::Role
       Properties:
-        PolicyName: lambda-dynamodb
-        PolicyDocument:
+        RoleName: MtSampleLambdaDefaultRole
+        AssumeRolePolicyDocument:
           Version: '2012-10-17'
           Statement:
             - Effect: Allow
-              Action:
-                - dynamodb:Query
-                - dynamodb:Scan
-                - dynamodb:GetItem
-                - dynamodb:PutItem
-                - dynamodb:UpdateItem
-                - dynamodb:DeleteItem
-              Resource: arn:aws:dynamodb:*:*:table/*
-        Roles:
-          - Ref: IamRoleLambdaExecution
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: MtSampleLambdaDefaultPolicy
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - logs:CreateLogGroup
+                    - logs:CreateLogStream
+                    - logs:PutLogEvents
+                  Resource:
+                    - 'Fn::Join':
+                      - ':'
+                      -
+                        - 'arn:aws:logs'
+                        - !Ref AWS::Region
+                        - !Ref AWS::AccountId
+                        - 'log-group:/aws/lambda/*:*:*'
+                - Effect: Allow
+                  Action:
+                    - dynamodb:Query
+                    - dynamodb:Scan
+                    - dynamodb:GetItem
+                    - dynamodb:PutItem
+                    - dynamodb:UpdateItem
+                    - dynamodb:DeleteItem
+                  Resource: arn:aws:dynamodb:*:*:table/*
