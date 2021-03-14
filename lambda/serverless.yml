@@ -6,13 +6,13 @@ provider:
   stage: ${opt:stage, self:custom.defaultStage}
   profile: ${opt:profile, self:custom.defaultProfile}
   region: us-west-2
-  apiName: mt-sample-${self:provider.stage}-api
+  apiName: ${self:service}-${self:provider.stage}-api
   endpointType: REGIONAL
   logRetentionInDays: 30
   versionFunctions: false
   timeout: 20
   deploymentBucket:
-    name: mt-sample-${self:provider.stage}-deployment
+    name: ${self:service}-${self:provider.stage}-deployment
   iam:
     role: myDefaultRole
 
@@ -22,13 +22,6 @@ provider:
 #--------------------------------------------------------------------------------
 package:
   individually: true
-
-#--------------------------------------------------------------------------------
-# plugins
-# https://www.serverless.com/framework/docs/providers/aws/guide/plugins/
-#--------------------------------------------------------------------------------
-plugins:
-  - serverless-python-requirements
 
 #--------------------------------------------------------------------------------
 # variables
@@ -106,7 +99,7 @@ resources:
     myDefaultRole:
       Type: AWS::IAM::Role
       Properties:
-        RoleName: mt-sample-${self:provider.stage}-lambdaDefaultRole
+        RoleName: ${self:service}-${self:provider.stage}-lambdaDefaultRole
         AssumeRolePolicyDocument:
           Version: '2012-10-17'
           Statement:
@@ -116,7 +109,7 @@ resources:
                   - lambda.amazonaws.com
               Action: sts:AssumeRole
         Policies:
-          - PolicyName: mt-sample-${self:provider.stage}-lambdaDefaultPolicy
+          - PolicyName: ${self:service}-${self:provider.stage}-lambdaDefaultPolicy
             PolicyDocument:
               Version: '2012-10-17'
               Statement:
