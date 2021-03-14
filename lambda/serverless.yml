@@ -106,7 +106,7 @@ resources:
     myDefaultRole:
       Type: AWS::IAM::Role
       Properties:
-        RoleName: MtSampleLambdaDefaultRole
+        RoleName: mt-sample-${self:provider.stage}-lambdaDefaultRole
         AssumeRolePolicyDocument:
           Version: '2012-10-17'
           Statement:
@@ -116,7 +116,7 @@ resources:
                   - lambda.amazonaws.com
               Action: sts:AssumeRole
         Policies:
-          - PolicyName: MtSampleLambdaDefaultPolicy
+          - PolicyName: mt-sample-${self:provider.stage}-lambdaDefaultPolicy
             PolicyDocument:
               Version: '2012-10-17'
               Statement:
