@@ -46,7 +46,11 @@ http://localhost:3000 が自動で開く。
 ## 環境変数
 
 アプリ起動時に埋め込む環境変数を`.env.development`(ローカル開発用)と`.env`(AWS開発環境用)で定義している。
-> `.env`はGit管理に上がらないのでローカルに持っておく
+> `.env`はGit管理に上がらない。ローカルにのみ持っておき、公開しないようにする。
+> ```bash
+> # .env
+> REACT_APP_API_ENDPOINT=__API Gatewayでデプロイされているエンドポイント__
+> ```
 
 ### `npm run start:dev`
 
