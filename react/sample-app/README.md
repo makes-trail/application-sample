@@ -24,19 +24,19 @@ cd sample-app
 npm install
 ```
 
-## JSON ServerでAPIモックを作成
+## PrismでAPIモックを作成
 
-[JSON Server](https://github.com/typicode/json-server)を用いて、デモ用のAPIモックサーバをローカルに立てる。
+[Prism](https://stoplight.io/open-source/prism)を用いて、デモ用のAPIモックサーバをローカルに立てる。
 
 ```
-npx json-server --watch ./mock/db.json --port 3333
+npx prism mock ./mock/mt-sample-api.yml --port 3333
 ```
 
-ブラウザから http://localhost:3333/fetch-isbn-summary?isbn=9784905325055 にアクセスして、JSONを取得できることを確認。
+ブラウザから http://localhost:3333/fetch/9784905325055 にアクセスして、JSONを取得できることを確認。
 
 ## Reactアプリを起動
 
-JSON Serverで立てたAPIモックはそのままの状態で、Reactアプリを起動する。（ローカル開発モード）
+Prismで立てたAPIモックはそのままの状態で、Reactアプリを起動する。（ローカル開発モード）
 ```
 npm run start:dev
 ```
@@ -46,18 +46,19 @@ http://localhost:3000 が自動で開く。
 ## 環境変数
 
 アプリ起動時に埋め込む環境変数を`.env.development`(ローカル開発用)と`.env`(AWS開発環境用)で定義している。
+> `.env`はGit管理に上がらないのでローカルに持っておく
 
 ### `npm run start:dev`
 
-ローカル開発モードでアプリを起動する。
+ローカル開発モードでアプリを起動する。（`.env.development`の環境変数が読まれる）
 
 ### `npm run start`
 
-AWS開発環境用モードでアプリを起動する。
+AWS開発環境用モードでアプリを起動する。（`.env`の環境変数が読まれる）
 
 ### `npm run build`
 
-AWS開発環境用のアプリを`/build`配下にビルドする。\
+AWS開発環境用のアプリを`/build`配下にビルドする。（`.env.development`の環境変数が読まれる）\
 このコマンドで`/build`配下に生成されたファイルたちをS3にアップロードして静的ホスティングする。
 
 
