@@ -1,15 +1,8 @@
 import requests
 import json
-from dataclasses import dataclass 
 
-
-@dataclass
-class Book:
-    isbn: str
-    title: str
-    author: str
-    publisher: str
-    cover: str
+from mt_sample_common.entity import Book
+from mt_sample_common import integration_response
 
 
 def handler(event: dict, context: dict) -> dict:
@@ -36,23 +29,7 @@ def handler(event: dict, context: dict) -> dict:
                 book = Book(summary_isbn, summary_title, summary_author, summary_publisher, summary_cover)
                 response.append(book.__dict__)
 
-        return {
-            "statusCode": 200,
-            "headers": {
-              "Access-Control-Allow-Headers": "Content-Type",
-              "Access-Control-Allow-Origin": "*",
-              "Access-Control-Allow-Methods": "*"
-            },
-            "body": json.dumps(response, ensure_ascii=False)
-        }
+        return integration_response.map(200, json.dumps(response, ensure_ascii=False))
     except Exception as e:
         print(e)
-        return {
-            "statusCode": 500,
-            "headers": {
-              "Access-Control-Allow-Headers": "Content-Type",
-              "Access-Control-Allow-Origin": "*",
-              "Access-Control-Allow-Methods": "*"
-            },
-            "body": json.dumps("ERROR")
-        }
+        return integration_response.map(500, json.dumps("ERROR"))

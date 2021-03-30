@@ -37,9 +37,15 @@ custom:
 # https://www.serverless.com/framework/docs/providers/aws/guide/layers/
 #--------------------------------------------------------------------------------
 layers:
-  requirements:
+  Requirements:
     package:
       artifact: layers/artifact/requirements.zip
+    compatibleRuntimes:
+      - python3.8
+    retain: false
+  MtSampleCommon:
+    package:
+      artifact: layers/artifact/mt_sample_common.zip
     compatibleRuntimes:
       - python3.8
     retain: false
@@ -60,6 +66,7 @@ functions:
     handler: main.handler
     layers:
       - !Ref RequirementsLambdaLayer
+      - !Ref MtSampleCommonLambdaLayer
     events:
       - http:
           path: /fetch/{isbn}
@@ -71,6 +78,7 @@ functions:
     handler: main.handler
     layers:
       - !Ref RequirementsLambdaLayer
+      - !Ref MtSampleCommonLambdaLayer
     environment:
       DYNAMODB_TABLE: ${self:custom.dynamedbTableName}
     events:
@@ -84,6 +92,7 @@ functions:
     handler: main.handler
     layers:
       - !Ref RequirementsLambdaLayer
+      - !Ref MtSampleCommonLambdaLayer
     environment:
       DYNAMODB_TABLE: ${self:custom.dynamedbTableName}
     events:

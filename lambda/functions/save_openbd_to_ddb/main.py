@@ -1,7 +1,8 @@
 import os
 import requests
-import boto3
 import json
+import boto3
+from mt_sample_common import integration_response
 
 
 # 取得したjsonデータから項目を挿入するための構造に整形
@@ -34,22 +35,7 @@ def handler(event: dict, context: dict) -> dict:
             Item=openbd_dict
         )
 
-        return {
-            "statusCode": 204,
-            "headers": {
-              "Access-Control-Allow-Headers": "Content-Type",
-              "Access-Control-Allow-Origin": "*",
-              "Access-Control-Allow-Methods": "*"
-            }
-        }
+        return integration_response.map(204)
     except Exception as e:
         print(e)
-        return {
-            "statusCode": 500,
-            "headers": {
-              "Access-Control-Allow-Headers": "Content-Type",
-              "Access-Control-Allow-Origin": "*",
-              "Access-Control-Allow-Methods": "*"
-            },
-            "body": json.dumps("ERROR")
-        }
+        return integration_response.map(500, json.dumps("ERROR"))
