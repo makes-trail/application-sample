@@ -4,41 +4,49 @@
 
 ### 多要素認証（MFA）
 
-1. AWS マネジメントコンソール上部の`ユーザ名@アカウントID`をクリックし、プルダウンから「マイセキュリティ資格情報」を選択
+#### 1. AWS マネジメントコンソール上部の`ユーザ名@アカウントID`をクリックし、プルダウンから「マイセキュリティ資格情報」を選択
 
 <details><summary>画像を見る</summary><div>
 <img width=1000 src="./image/management_console_top.png">
 </div></details>
 
-2. [AWS公式ドキュメント](https://docs.aws.amazon.com/ja_jp/IAM/latest/UserGuide/id_credentials_mfa_enable_virtual.html?icmpid=docs_iam_console#enable-virt-mfa-for-own-iam-user)などを参考にしてMFAを有効化（下図はすでに有効化が完了しているもの）
+#### 2. [AWS公式ドキュメント](https://docs.aws.amazon.com/ja_jp/IAM/latest/UserGuide/id_credentials_mfa_enable_virtual.html?icmpid=docs_iam_console#enable-virt-mfa-for-own-iam-user)などを参考にしてMFAを有効化
+
+下図はすでに有効化が完了しているものです。
 
 <details><summary>画像を見る</summary><div>
 <img width=1000 src="./image/iam_mfa.png">
 </div></details>
 
-3. 有効化が完了したら一度サインアウトし、再度サインイン（その際MFA認証が要求されればOK）
+#### 3. 有効化が完了したら一度サインアウトし、再度サインイン
+
+その際MFA認証が要求されればOKです。
 
 ### アクセスキー
 
-1. AWS マネジメントコンソール上部の`ユーザ名@アカウントID`をクリックし、プルダウンから「マイセキュリティ資格情報」を選択（MFA有効化と同じ画面）
+#### 1. AWS マネジメントコンソール上部の`ユーザ名@アカウントID`をクリックし、プルダウンから「マイセキュリティ資格情報」を選択
+
+MFA有効化と同じ画面です。
 
 <details><summary>画像を見る</summary><div>
 <img width=1000 src="./image/management_console_top.png">
 </div></details>
 
-2. 「アクセスキーの作成」をクリック
+#### 2. 「アクセスキーの作成」をクリック
 
 <details><summary>画像を見る</summary><div>
 <img width=1000 src="./image/iam_accesskey.png">
 </div></details>
 
-3. ウィンドウが出てくるので、「csvファイルのダウンロード」をクリック（作成したアクセスキーをダウンロードできるのはこの１回限りなので注意）
+#### 3. ウィンドウが出てくるので、「csvファイルのダウンロード」をクリック
+
+作成したアクセスキーをダウンロードできるのはこの１回限りなので注意してください。
 
 <details><summary>画像を見る</summary><div>
 <img width=1000 src="./image/iam_download_accesskey.png">
 </div></details>
 
-4. ダウンロードしたcsvファイルを無くさないように、そして流出しない(!!!)ように、ローカルPC内で大切に保管
+#### 4. ダウンロードしたcsvファイルを無くさないように、そして流出しない(!!!)ように、ローカルPC内で大切に保管
 
 > アクセスキーは流出しないように、特に間違えてもGitHubに上げないようにくれぐれも取り扱いには気をつけてください！\
 > 流出したらどんなことが起きるのかは下のサイトなどが詳しいです。
