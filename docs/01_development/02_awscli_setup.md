@@ -20,7 +20,7 @@
 
 #### 3. 有効化が完了したら一度サインアウトし、再度サインイン
 
-その際MFA認証が要求されればOKです。
+その際にMFA認証が要求されればOKです。
 
 ### ②アクセスキー
 
@@ -120,7 +120,7 @@ role_arn = arn:aws:iam::25*********4:role/ApplicationDeveloperRole
 
 ### ③実行確認
 
-Git Bash/ターミナルで`aws s3 ls --profile mfa`を実行すると、MFAコードの入力を要求されます。入力してEnterを押し、S3バケット名が表示されれば確認は終了です。
+Git Bash/ターミナルで`aws s3 ls --profile mfa`を実行すると、MFAコードの入力を要求されます。入力してEnterを押し、S3バケット名の一覧が表示されれば確認は終了です。
 
 <details><summary>画像を見る</summary><div>
 <img width=1000 src="./image/aws_s3_ls.png">
