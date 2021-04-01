@@ -51,3 +51,36 @@ MFA有効化と同じ画面です。
 > アクセスキーは流出しないように、特に間違えてもGitHubに上げないようにくれぐれも取り扱いには気をつけてください！\
 > 流出したらどんなことが起きるのかは下のサイトなどが詳しいです。
 > - [GitHub に AWS キーペアを上げると抜かれるってほんと？？？試してみよー！](https://qiita.com/saitotak/items/813ac6c2057ac64d5fef)
+
+### スイッチロール
+
+開発チームのIAMユーザーにアタッチされているIAMポリシーは`PowerUserAccess`です。なのでIAMまわりの参照・変更は総じてできないようになっています。\
+ですがLambdaの実行ロールを作成・編集するためにはIAMロールやIAMポリシーを参照・変更する必要が出てきます。\
+そこで`ApplicationDeveloperRole`というIAMロールを用意しています。そこには`PowerUserAccess`以外にLambdaの実行ロールを作成・編集するためのポリシーがアタッチされています。\
+開発チームのIAMユーザーはこのIAMロールにスイッチすることでLambdaまわりの設定を行えるようになります。
+
+#### 1. AWS マネジメントコンソール上部の`ユーザ名@アカウントID`をクリックし、プルダウンから「ロールの切り替え」を選択
+
+<details><summary>画像を見る</summary><div>
+<img width=1000 src="./image/management_console_switch_role.png">
+</div></details>
+
+#### 2. 以下の項目を入力して「ロールの切り替え」をクリック
+
+- アカウント: `25*********4`（「マイアカウント」の横に表示されているもの）
+- ロール: `ApplicationDeveloperRole`
+- 表示名: `{名前}-app`（任意ですがこうしておくと分かりやすいと思います）
+- 色: 自由に好きな色を選んでください
+
+<details><summary>画像を見る</summary><div>
+<img width=1000 src="./image/iam_switch_role.png">
+</div></details>
+
+#### 3. 切り替え後の画面
+
+下図のようになったらOKです。
+
+<details><summary>画像を見る</summary><div>
+<img width=1000 src="./image/iam_switch_role_done.png">
+</div></details>
+
