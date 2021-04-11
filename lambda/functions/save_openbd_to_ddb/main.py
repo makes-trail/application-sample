@@ -9,7 +9,7 @@ from mt_sample_common import integration_response
 def format_openbd(isbn: str, openbd_json: dict) -> dict:
     if len(openbd_json) != 1:
         print("The data fetched from OpenBD is empty")
-        raise
+        return {}
     output_dict = openbd_json[0]["summary"]
     output_dict["isbn"] = isbn
     output_dict["source"] = "openbd"
@@ -28,14 +28,16 @@ def handler(event: dict, context: dict) -> dict:
         res = requests.get(openbd_api_url, headers=headers, timeout=10.0)
         data = res.json()
         openbd_dict = format_openbd(isbn, data)
-    
-        dynamo = boto3.resource("dynamodb")
-        table = dynamo.Table(table_name)
-        table.put_item(
-            Item=openbd_dict
-        )
 
-        return integration_response.map(204)
+        if len(openbd_dict) == 0:
+            return integration_response.map(204)
+        else:
+            dynamo = boto3.resource("dynamodb")
+            table = dynamo.Table(table_name)
+            table.put_item(
+            Item=openbd_dict
+            )
+            return integration_response.map(200, json.dumps(openbd_dict))
     except Exception as e:
         print(e)
         return integration_response.map(500, json.dumps("ERROR"))
