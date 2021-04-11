@@ -8,7 +8,7 @@ const BookInfo: React.FC<{ book: Book }> = ({ book }) => {
     const urlGbooks = new URL(`${process.env.REACT_APP_API_ENDPOINT}/save-gbooks/${isbn}`);
     const resOpenbd = await http.put(urlOpenbd.toString());
     const resGbooks = await http.put(urlGbooks.toString());
-    if (resOpenbd.status === 204 && resGbooks.status === 204) {
+    if (resOpenbd.status === 200 || resGbooks.status === 200) {
       alert("書籍情報がDynamoDBに保存されたよ！")
     }
   }
