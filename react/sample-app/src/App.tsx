@@ -3,7 +3,11 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import logo from './logo.svg';
 import './App.css';
 import Home from './pages/Home';
+import SearchBook from './pages/SearchBook';
 import FetchBook from './pages/FetchBook';
+import NotFound from './pages/NotFound';
+import InternalServerError from './pages/InternalServerError';
+import ServiceUnavailable from './pages/ServiceUnavailable';
 
 function App() {
   return (
@@ -17,13 +21,20 @@ function App() {
             <Route exact path="/">
               <Home />
             </Route>
+            <Route path="/search-book">
+              <SearchBook />
+            </Route>
             <Route path="/fetch-book/:isbn">
               <FetchBook />
             </Route>
+            <Route path="/500">
+              <InternalServerError />
+            </Route>
+            <Route path="/503">
+              <ServiceUnavailable />
+            </Route>
             <Route path="*">
-              <div>
-                <h1>Page Not Found</h1>
-              </div>
+              <NotFound />
             </Route>
           </Switch>
         </Router>
