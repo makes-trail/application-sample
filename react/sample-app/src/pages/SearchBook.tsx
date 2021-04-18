@@ -34,7 +34,7 @@ const SearchBook: React.FC = () => {
           onChange={(e) => setIsbn(e.target.value)}
         />
         <span className="text-error font-yumin">{errorMessage}</span>
-        <button type="submit" className="font-yumin">検索</button>
+        <button type="submit" className="font-yumin react-btn">検索</button>
       </form>
       <Link to={"/"}>
         <p className="font-yumin">Homeに戻る</p>
