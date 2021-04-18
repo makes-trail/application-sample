@@ -41,7 +41,7 @@ const BookCard: React.FC<{ book: Book }> = ({ book }) => {
         />
         <CardMedia
           className={classes.cover}
-          image={book.cover ? book.cover : 'https://icon-pit.com/wp-content/uploads/2019/02/book_note_icon_4691-300x300.png'}
+          image={book.cover ? book.cover : '/assets/image/book_icon_300x300.png'}
         />
         <CardContent>
           <Typography>
