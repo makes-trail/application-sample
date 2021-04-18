@@ -43,6 +43,38 @@ paths:
               examples:
                 error:
                   value: Error
+  "/list-books":
+    get:
+      summary: RDSに保存された書籍の一覧を取得する
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Book"
+              example:
+                - isbn: "9784905325055"
+                  title: 魔法の世紀
+                  author: 落合陽一／著
+                  publisher: 株式会社PLANETS／第二次惑星開発委員会
+                  cover: "https://cover.openbd.jp/9784905325055.jpg"
+                - isbn: "9784873115894"
+                  title: SQLアンチパターン
+                  author: ビルカーウィン
+                  publisher: ""
+                  cover: "http://books.google.com/books/content?id=InwjlwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                error:
+                  value: Error
   "/save-openbd/{isbn}":
     parameters:
       - schema:
@@ -54,6 +86,8 @@ paths:
     put:
       summary: OpenBD APIから取得した書籍情報を保存する
       responses:
+        "200":
+          description: OK
         "204":
           description: No Content
         "500":
@@ -76,6 +110,44 @@ paths:
     put:
       summary: GoogleBooks APIから取得した書籍情報を保存する
       responses:
+        "200":
+          description: OK
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                error:
+                  value: Error
+  "/save-book/{isbn}":
+    parameters:
+      - schema:
+          type: string
+        name: isbn
+        in: path
+        required: true
+        description: ISBNコード
+    put:
+      summary: 書籍情報をRDSに保存する
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+              examples:
+                魔法の世紀:
+                  value:
+                    isbn: "9784905325055"
+                    title: 魔法の世紀
+                    author: 落合陽一／著
+                    publisher: 株式会社PLANETS／第二次惑星開発委員会
+                    cover: "https://cover.openbd.jp/9784905325055.jpg"
         "204":
           description: No Content
         "500":
