@@ -133,6 +133,43 @@ functions:
         - ${self:custom.subnetB}
     package:
       artifact: functions/artifact/save_book_to_rds.zip
+  invoke-save-book:
+    handler: main.handler
+    layers:
+      - { Ref: RequirementsLambdaLayer }
+      - { Ref: MtSampleCommonLambdaLayer }
+    environment:
+      CHILD_FUNCTION_NAME: ${self:service}-${self:provider.stage}-save-book-to-rds
+    events:
+      - http:
+          path: /save/{isbn}
+          method: put
+          cors: true
+    package:
+      artifact: functions/artifact/invoke_save_book.zip
+  list-books:
+    handler: main.handler
+    layers:
+      - { Ref: RequirementsLambdaLayer }
+      - { Ref: MtSampleCommonLambdaLayer }
+    environment:
+      RDS_HOST: ${self:custom.rdsHost}
+      RDS_USER: ${self:custom.rdsUser}
+      RDS_PASSWORD: ${self:custom.rdsPassword}
+      RDS_DATABASE: ${self:custom.rdsDatabase}
+    vpc:
+      securityGroupIds:
+        - ${self:custom.lambdaSecurityGroup}
+      subnetIds:
+        - ${self:custom.subnetA}
+        - ${self:custom.subnetB}
+    events:
+      - http:
+          path: /list
+          method: get
+          cors: true
+    package:
+      artifact: functions/artifact/list_books.zip
 
 #--------------------------------------------------------------------------------
 # resources
@@ -174,6 +211,10 @@ resources:
                     - ec2:CreateNetworkInterface
                     - ec2:DescribeNetworkInterfaces
                     - ec2:DeleteNetworkInterface
+                  Resource: "*"
+                - Effect: Allow
+                  Action:
+                    - lambda:InvokeFunction
                   Resource: "*"
                 - Effect: Allow
                   Action:
