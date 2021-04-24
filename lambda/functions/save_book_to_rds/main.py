@@ -20,8 +20,10 @@ def convert_gbooks_item_to_book(gbooks_item: dict) -> "Book":
     isbn = gbooks_item["isbn"]
     title = gbooks_item["title"]
     author = " ".join(gbooks_item["authors"])
-    publisher = gbooks_item["publisher"]
-    cover = gbooks_item["imageLinks"]["thumbnail"]
+    publisher = ""
+    cover = ""
+    if gbooks_item.get("imageLinks") is not None:
+        cover = gbooks_item["imageLinks"].get("thumbnail", "")
 
     book = Book(isbn, title, author, publisher, cover)
     return book
@@ -31,8 +33,12 @@ def convert_both_items_to_book(openbd_item: dict, gbooks_item: dict) -> "Book":
     isbn = openbd_item["isbn"]
     title = openbd_item["title"] if openbd_item["title"] != "" else gbooks_item["title"]
     author = openbd_item["author"] if openbd_item["author"] != "" else " ".join(gbooks_item["authors"])
-    publisher = openbd_item["publisher"] if openbd_item["publisher"] != "" else gbooks_item["publisher"]
-    cover = openbd_item["cover"] if openbd_item["cover"] != "" else gbooks_item["imageLinks"]["thumbnail"]
+    publisher = openbd_item["publisher"]
+    cover = ""
+    if openbd_item["cover"] != "":
+        cover = openbd_item["cover"]
+    elif gbooks_item.get("iamgeLinks") is not None:
+        cover = gbooks_item["imageLinks"].get("thumbnail", "")
 
     book = Book(isbn, title, author, publisher, cover)
     return book
@@ -48,7 +54,7 @@ def handler(event: dict, context: dict) -> dict:
     dsn = f"host={rds_host} user={rds_user} password={rds_password} dbname={rds_database}"
 
     # 指定したISBNコードの書籍がBooksテーブルに存在するかチェックする
-    sql_checkifexists = """
+    sql_check_if_exists = """
         SELECT COUNT(isbn)
         FROM books
         WHERE isbn = %(isbn)s"""
@@ -67,7 +73,7 @@ def handler(event: dict, context: dict) -> dict:
         WHERE isbn = %(isbn)s"""
 
     try:
-        isbn = event.get("isbn")
+        isbn = event["isbn"]
         dynamo = boto3.resource("dynamodb")
         table = dynamo.Table(table_name)
         response_openbd = table.get_item(
@@ -82,7 +88,7 @@ def handler(event: dict, context: dict) -> dict:
         if openbd_item is None and gbooks_item is None:
             return {
                 "status": "success",
-                "book": ""
+                "book": {}
             }
         elif openbd_item is not None and gbooks_item is None:
             book = convert_openbd_item_to_book(openbd_item)
@@ -91,9 +97,11 @@ def handler(event: dict, context: dict) -> dict:
         else:
             book = convert_both_items_to_book(openbd_item, gbooks_item)
         
+        print("saving book to rds:", book.__dict__)
+        
         with psycopg2.connect(dsn) as conn:
             with conn.cursor() as cur:
-                cur.execute(sql_checkifexists, {"isbn": book.isbn})
+                cur.execute(sql_check_if_exists, {"isbn": book.isbn})
                 (count,) = cur.fetchone()
         
         if count == 0:
@@ -111,7 +119,7 @@ def handler(event: dict, context: dict) -> dict:
 
         return {
             "status": "success",
-            "book": json.dumps(book.__dict__, ensure_ascii=False)
+            "book": book.__dict__
         }
     except Exception as e:
         print(e)
