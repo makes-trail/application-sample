@@ -74,8 +74,12 @@ functions:
         - "**"
       include:
         - handler.py
+    description: hello world!
   fetch-openbd-summary:
     handler: main.handler
+    package:
+      artifact: functions/artifact/fetch_openbd_summary.zip
+    description: ISBNをもとにopenBD APIから取得した書籍情報のsummaryを返す
     layers:
       - { Ref: RequirementsLambdaLayer }
       - { Ref: MtSampleCommonLambdaLayer }
@@ -84,10 +88,11 @@ functions:
           path: /fetch/{isbn}
           method: get
           cors: true
-    package:
-      artifact: functions/artifact/fetch_openbd_summary.zip
   save-openbd-to-ddb:
     handler: main.handler
+    package:
+      artifact: functions/artifact/save_openbd_to_ddb.zip
+    description: ISBNをもとにopenBD APIから取得した書籍情報のsummaryをDynamoDBに保存する
     layers:
       - { Ref: RequirementsLambdaLayer }
       - { Ref: MtSampleCommonLambdaLayer }
@@ -98,10 +103,11 @@ functions:
           path: /save-openbd/{isbn}
           method: put
           cors: true
-    package:
-      artifact: functions/artifact/save_openbd_to_ddb.zip
   save-gbooks-to-ddb:
     handler: main.handler
+    package:
+      artifact: functions/artifact/save_gbooks_to_ddb.zip
+    description: ISBNをもとにGoogle Books APIから取得した書籍情報のvolumeInfoをDynamoDBに保存する
     layers:
       - { Ref: RequirementsLambdaLayer }
       - { Ref: MtSampleCommonLambdaLayer }
@@ -112,10 +118,11 @@ functions:
           path: /save-gbooks/{isbn}
           method: put
           cors: true
-    package:
-      artifact: functions/artifact/save_gbooks_to_ddb.zip
   save-book-to-rds:
     handler: main.handler
+    package:
+      artifact: functions/artifact/save_book_to_rds.zip
+    description: ISBNをもとにDynamoDBに保存されている書籍情報を取得・整形してRDSへ保存する
     layers:
       - { Ref: RequirementsLambdaLayer }
       - { Ref: MtSampleCommonLambdaLayer }
@@ -131,10 +138,11 @@ functions:
       subnetIds:
         - ${self:custom.subnetA}
         - ${self:custom.subnetB}
-    package:
-      artifact: functions/artifact/save_book_to_rds.zip
   invoke-save-book:
     handler: main.handler
+    package:
+      artifact: functions/artifact/invoke_save_book.zip
+    description: ISBNをもとにsave-book-to-rdsを呼び出す
     layers:
       - { Ref: RequirementsLambdaLayer }
       - { Ref: MtSampleCommonLambdaLayer }
@@ -145,10 +153,11 @@ functions:
           path: /save/{isbn}
           method: put
           cors: true
-    package:
-      artifact: functions/artifact/invoke_save_book.zip
   list-books:
     handler: main.handler
+    package:
+      artifact: functions/artifact/list_books.zip
+    description: RDSに保存されている全ての書籍情報をリストにして返す
     layers:
       - { Ref: RequirementsLambdaLayer }
       - { Ref: MtSampleCommonLambdaLayer }
@@ -168,8 +177,6 @@ functions:
           path: /list
           method: get
           cors: true
-    package:
-      artifact: functions/artifact/list_books.zip
 
 #--------------------------------------------------------------------------------
 # resources
