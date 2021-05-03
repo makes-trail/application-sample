@@ -6,7 +6,7 @@ def map(status_code: int, body: str = None) -> dict:
 
     Parameters
     ----------
-    statu_code: str
+    statu_code: int
         ステータスコード
     body: str
         レスポンスボディ
