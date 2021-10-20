@@ -5,6 +5,7 @@ import './App.css';
 import Home from './pages/Home';
 import SearchBook from './pages/SearchBook';
 import FetchBook from './pages/FetchBook';
+import ListBooks from './pages/ListBooks';
 import NotFound from './pages/NotFound';
 import InternalServerError from './pages/InternalServerError';
 import ServiceUnavailable from './pages/ServiceUnavailable';
@@ -26,6 +27,9 @@ function App() {
             </Route>
             <Route path="/fetch-book/:isbn">
               <FetchBook />
+            </Route>
+            <Route path="/list-books">
+              <ListBooks />
             </Route>
             <Route path="/500">
               <InternalServerError />

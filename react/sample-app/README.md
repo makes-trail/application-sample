@@ -2,6 +2,10 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+> 参考
+> - [[YouTube] Full Modern React Tutorial (The Net Ninja)](https://www.youtube.com/playlist?list=PL4cUxeGkcC9gZD-Tvwfod2gaISzfRiP9d)
+> - [[YouTube] Material UI Tutorial (The Net Ninja)](https://www.youtube.com/playlist?list=PL4cUxeGkcC9gjxLvV4VEkZ6H6H4yWuS58)
+
 ## 環境構築
 
 Node.jsとnpmをインストールする。
