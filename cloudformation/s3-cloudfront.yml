@@ -1,11 +1,10 @@
-AWSTemplateFormatVersion: '2010-09-09'
-Description:
-  S3 and CloudFront for static website hosting (OAI Available)
+AWSTemplateFormatVersion: 2010-09-09
+Description: S3 and CloudFront for static website hosting (OAI Available)
 
-#----------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------
 # Parameters
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html
-#----------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------
 Parameters:
   ServiceName:
     Type: String
@@ -14,18 +13,18 @@ Parameters:
     Type: String
     Default: dev
 
-#----------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------
 # Resources
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
-#----------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------
 Resources:
-# ----------------------------------------#
-# S3 Bucket
-# ----------------------------------------#
+  # ----------------------------------------#
+  # S3 Bucket
+  # ----------------------------------------#
   S3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub '${ServiceName}-${Env}-react-app'
+      BucketName: !Sub "${ServiceName}-${Env}-react-app"
       BucketEncryption:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
@@ -45,37 +44,37 @@ Resources:
       Bucket: !Ref S3Bucket
       PolicyDocument:
         Statement:
-        - Action: s3:GetObject
-          Effect: Allow
-          Resource: !Sub 'arn:aws:s3:::${S3Bucket}/*'
-          Principal:
-            CanonicalUser: !GetAtt CloudFrontOAI.S3CanonicalUserId
+          - Action: s3:GetObject
+            Effect: Allow
+            Resource: !Sub "arn:aws:s3:::${S3Bucket}/*"
+            Principal:
+              CanonicalUser: !GetAtt CloudFrontOAI.S3CanonicalUserId
 
-# ----------------------------------------#
-# CloudFront
-# ----------------------------------------#
+  # ----------------------------------------#
+  # CloudFront
+  # ----------------------------------------#
   CloudFrontDistribution:
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
         Origins:
-        - Id: !Sub 'S3Origin-${S3Bucket}'
-          DomainName: !GetAtt S3Bucket.RegionalDomainName
-          S3OriginConfig:
-            OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudFrontOAI}"
+          - Id: !Sub "S3Origin-${S3Bucket}"
+            DomainName: !GetAtt S3Bucket.RegionalDomainName
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudFrontOAI}"
         DefaultRootObject: index.html
         DefaultCacheBehavior:
-          TargetOriginId: !Sub 'S3Origin-${S3Bucket}'
+          TargetOriginId: !Sub "S3Origin-${S3Bucket}"
           # CachingDisabled
           # https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html
           CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
           ViewerProtocolPolicy: redirect-to-https
           AllowedMethods:
-          - GET
-          - HEAD
+            - GET
+            - HEAD
           CachedMethods:
-          - GET
-          - HEAD
+            - GET
+            - HEAD
         CustomErrorResponses:
           - ErrorCode: 403
             ErrorCachingMinTTL: 10
@@ -88,4 +87,4 @@ Resources:
     Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
     Properties:
       CloudFrontOriginAccessIdentityConfig:
-        Comment: !Sub 'access-identity-${S3Bucket}'
+        Comment: !Sub "access-identity-${S3Bucket}"
