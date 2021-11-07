@@ -14,8 +14,8 @@ const amplifyConfig = {
         'openid',
         'profile'
       ],
-      redirectSignIn: 'https://xxxxxx.cloudfront.net/',
-      redirectSignOut: 'https://xxxxxx.cloudfront.net/',
+      redirectSignIn: 'https://xxxxxx.cloudfront.net',
+      redirectSignOut: 'https://xxxxxx.cloudfront.net',
       responseType: 'code'
     }
   }

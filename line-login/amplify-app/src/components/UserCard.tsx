@@ -6,15 +6,15 @@ import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles({
   root: {
-    margin: '50px auto',
-    maxWidth: 400,
+    margin: '20px auto',
+    maxWidth: 300,
     boxShadow: '5px 5px 5px rgba(0,0,0,0.3)'
   },
   header: {
     backgroundColor: '#dddddd',
   },
   cover: {
-    height: 300,
+    height: 250,
   }
 });
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Amplify, { Auth } from 'aws-amplify';
+import Amplify from 'aws-amplify';
 import amplifyConfig from '../amplifyConfig';
 import { CognitoUserSession } from 'amazon-cognito-identity-js';
 
@@ -28,7 +28,6 @@ const UserInfo: React.FC<{ userSession: CognitoUserSession }> = ({ userSession }
             Authorization: jwtToken
           }
         });
-        console.log(url);
 
         const currentUser: User = await res.data;
         setUser(currentUser);
