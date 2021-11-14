@@ -4,18 +4,15 @@ phases:
     runtime-versions:
       nodejs: 12
     commands:
-      - pwd
       - cd ./react/sample-app
       - npm ci
   pre_build:
     commands:
-      - pwd
       - touch .env
       - echo REACT_APP_API_ENDPOINT=project_env:${api_endpoint} >> .env
       - cat .env
   build:
     commands:
-      - pwd
       - npm run build
 artifacts:
   files:
