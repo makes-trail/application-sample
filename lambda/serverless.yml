@@ -39,12 +39,12 @@ custom:
   # Security Group
   lambdaSecurityGroup: ${ssm:security-group-for-lambda}
   # RDS
-  rdsHost: ${ssm:/${self:service}${self:provider.stage}/rds/host}
-  rdsUser: ${ssm:/${self:service}${self:provider.stage}/rds/user}
-  rdsPassword: ${ssm:/${self:service}${self:provider.stage}/rds/password}
-  rdsDatabase: ${ssm:/${self:service}${self:provider.stage}/rds/database}
+  rdsHost: ${ssm:/${self:service}/${self:provider.stage}/rds/host}
+  rdsUser: ${ssm:/${self:service}/${self:provider.stage}/rds/user}
+  rdsPassword: ${ssm:/${self:service}/${self:provider.stage}/rds/password}
+  rdsDatabase: ${ssm:/${self:service}/${self:provider.stage}/rds/database}
   # DynamoDB
-  dynamodbTable: ${ssm:/${self:service}${self:provider.stage}/dynamodb/table}
+  dynamodbTable: ${ssm:/${self:service}/${self:provider.stage}/dynamodb/table}
 
 #--------------------------------------------------------------------------------
 # layers
@@ -81,7 +81,6 @@ functions:
       - http:
           path: /fetch/{isbn}
           method: get
-          cors: true
   save-openbd-to-ddb:
     handler: main.handler
     package:
@@ -96,7 +95,6 @@ functions:
       - http:
           path: /save-openbd/{isbn}
           method: put
-          cors: true
   save-gbooks-to-ddb:
     handler: main.handler
     package:
@@ -111,7 +109,6 @@ functions:
       - http:
           path: /save-gbooks/{isbn}
           method: put
-          cors: true
   save-book-to-rds:
     handler: main.handler
     package:
@@ -146,7 +143,6 @@ functions:
       - http:
           path: /save/{isbn}
           method: put
-          cors: true
   list-books:
     handler: main.handler
     package:
@@ -170,7 +166,6 @@ functions:
       - http:
           path: /list
           method: get
-          cors: true
 
 #--------------------------------------------------------------------------------
 # resources

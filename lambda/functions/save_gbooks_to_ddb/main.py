@@ -2,7 +2,6 @@ import os
 import requests
 import json
 import boto3
-from mt_sample_common import integration_response
 
 
 # 取得したjsonデータから項目を挿入するための構造に整形
@@ -30,14 +29,22 @@ def handler(event: dict, context: dict) -> dict:
         gbooks_dict = format_gbooks(isbn, data)
         
         if len(gbooks_dict) == 0:
-            return integration_response.map(204)
+            return {
+                "statusCode": 204
+            }
         else:
             dynamo = boto3.resource("dynamodb")
             table = dynamo.Table(table_name)
             table.put_item(
                 Item=gbooks_dict
             )
-            return integration_response.map(200, json.dumps(gbooks_dict))
+            return {
+                "statusCode": 200,
+                "body": json.dumps(gbooks_dict, ensure_ascii=False)
+            }
     except Exception as e:
         print(e)
-        return integration_response.map(500, json.dumps("ERROR"))
+        return {
+            "statusCode": 500,
+            "body": json.dumps("ERROR")
+        }
