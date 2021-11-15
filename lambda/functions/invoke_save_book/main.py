@@ -4,7 +4,6 @@ import json
 import boto3
 
 from mt_sample_common.entity import Book
-from mt_sample_common import integration_response
 
 
 def handler(event: dict, context: dict) -> dict:
@@ -28,11 +27,22 @@ def handler(event: dict, context: dict) -> dict:
         if response_json["status"] == "success":
             book = response_json["book"]
             if book:
-                return integration_response.map(200, json.dumps(book, ensure_ascii=False))
+                return {
+                    "statusCode": 200,
+                    "body": json.dumps(book, ensure_ascii=False)
+                }
             else:
-                return integration_response.map(204)
+                return {
+                    "statusCode": 204
+                }
         else:
-            return integration_response.map(500, json.dumps("ERROR"))
+            return {
+                "statusCode": 500,
+                "body": json.dumps("ERROR")
+            }
     except Exception as e:
         print(e)
-        return integration_response.map(500, json.dumps("ERROR"))
+        return {
+            "statusCode": 500,
+            "body": json.dumps("ERROR")
+        }

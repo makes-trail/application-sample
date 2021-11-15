@@ -2,6 +2,7 @@ import os
 import json
 import psycopg2
 import boto3
+
 from mt_sample_common.entity import Book
 
 

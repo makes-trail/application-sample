@@ -6,11 +6,12 @@ provider:
   stage: ${opt:stage, self:custom.defaultStage}
   profile: ${opt:profile, self:custom.defaultProfile}
   region: us-west-2
+  stackName: ${self:service}-${self:provider.stage}-serverless
   apiName: ${self:service}-${self:provider.stage}-api
   endpointType: REGIONAL
   logRetentionInDays: 30
   versionFunctions: false
-  timeout: 20
+  timeout: 30
   deploymentBucket:
     name: ${self:service}-${self:provider.stage}-lambda-deployment
     serverSideEncryption: AES256
@@ -31,7 +32,6 @@ package:
 custom:
   defaultStage: dev
   defaultProfile: default
-  dynamedbTableName: mt-sample-dev
   # VPC
   vpcId: ${ssm:vpc}
   subnetA: ${ssm:private-subnet-a}
@@ -39,10 +39,12 @@ custom:
   # Security Group
   lambdaSecurityGroup: ${ssm:security-group-for-lambda}
   # RDS
-  rdsHost: ${ssm:/rds/dev/host}
-  rdsUser: ${ssm:/rds/${self:provider.stage}/user}
-  rdsPassword: ${ssm:/rds/${self:provider.stage}/password}
-  rdsDatabase: ${ssm:/rds/${self:provider.stage}/database}
+  rdsHost: ${ssm:/${self:service}/${self:provider.stage}/rds/host}
+  rdsUser: ${ssm:/${self:service}/${self:provider.stage}/rds/user}
+  rdsPassword: ${ssm:/${self:service}/${self:provider.stage}/rds/password}
+  rdsDatabase: ${ssm:/${self:service}/${self:provider.stage}/rds/database}
+  # DynamoDB
+  dynamodbTable: ${ssm:/${self:service}/${self:provider.stage}/dynamodb/table}
 
 #--------------------------------------------------------------------------------
 # layers
@@ -67,71 +69,60 @@ layers:
 # https://www.serverless.com/framework/docs/providers/aws/guide/functions/
 #--------------------------------------------------------------------------------
 functions:
-  hello:
-    handler: handler.hello
-    package:
-      exclude:
-        - "**"
-      include:
-        - handler.py
-    description: hello world!
   fetch-openbd-summary:
     handler: main.handler
     package:
       artifact: functions/artifact/fetch_openbd_summary.zip
     description: ISBNをもとにopenBD APIから取得した書籍情報のsummaryを返す
     layers:
-      - { Ref: RequirementsLambdaLayer }
-      - { Ref: MtSampleCommonLambdaLayer }
+      - !Ref RequirementsLambdaLayer
+      - !Ref MtSampleCommonLambdaLayer
     events:
       - http:
           path: /fetch/{isbn}
           method: get
-          cors: true
   save-openbd-to-ddb:
     handler: main.handler
     package:
       artifact: functions/artifact/save_openbd_to_ddb.zip
     description: ISBNをもとにopenBD APIから取得した書籍情報のsummaryをDynamoDBに保存する
     layers:
-      - { Ref: RequirementsLambdaLayer }
-      - { Ref: MtSampleCommonLambdaLayer }
+      - !Ref RequirementsLambdaLayer
+      - !Ref MtSampleCommonLambdaLayer
     environment:
-      DYNAMODB_TABLE: ${self:custom.dynamedbTableName}
+      DYNAMODB_TABLE: ${self:custom.dynamodbTable}
     events:
       - http:
           path: /save-openbd/{isbn}
           method: put
-          cors: true
   save-gbooks-to-ddb:
     handler: main.handler
     package:
       artifact: functions/artifact/save_gbooks_to_ddb.zip
     description: ISBNをもとにGoogle Books APIから取得した書籍情報のvolumeInfoをDynamoDBに保存する
     layers:
-      - { Ref: RequirementsLambdaLayer }
-      - { Ref: MtSampleCommonLambdaLayer }
+      - !Ref RequirementsLambdaLayer
+      - !Ref MtSampleCommonLambdaLayer
     environment:
-      DYNAMODB_TABLE: ${self:custom.dynamedbTableName}
+      DYNAMODB_TABLE: ${self:custom.dynamodbTable}
     events:
       - http:
           path: /save-gbooks/{isbn}
           method: put
-          cors: true
   save-book-to-rds:
     handler: main.handler
     package:
       artifact: functions/artifact/save_book_to_rds.zip
     description: ISBNをもとにDynamoDBに保存されている書籍情報を取得・整形してRDSへ保存する
     layers:
-      - { Ref: RequirementsLambdaLayer }
-      - { Ref: MtSampleCommonLambdaLayer }
+      - !Ref RequirementsLambdaLayer
+      - !Ref MtSampleCommonLambdaLayer
     environment:
-      DYNAMODB_TABLE: ${self:custom.dynamedbTableName}
       RDS_HOST: ${self:custom.rdsHost}
       RDS_USER: ${self:custom.rdsUser}
       RDS_PASSWORD: ${self:custom.rdsPassword}
       RDS_DATABASE: ${self:custom.rdsDatabase}
+      DYNAMODB_TABLE: ${self:custom.dynamodbTable}
     vpc:
       securityGroupIds:
         - ${self:custom.lambdaSecurityGroup}
@@ -144,23 +135,22 @@ functions:
       artifact: functions/artifact/invoke_save_book.zip
     description: ISBNをもとにsave-book-to-rdsを呼び出す
     layers:
-      - { Ref: RequirementsLambdaLayer }
-      - { Ref: MtSampleCommonLambdaLayer }
+      - !Ref RequirementsLambdaLayer
+      - !Ref MtSampleCommonLambdaLayer
     environment:
       CHILD_FUNCTION_NAME: ${self:service}-${self:provider.stage}-save-book-to-rds
     events:
       - http:
           path: /save/{isbn}
           method: put
-          cors: true
   list-books:
     handler: main.handler
     package:
       artifact: functions/artifact/list_books.zip
     description: RDSに保存されている全ての書籍情報をリストにして返す
     layers:
-      - { Ref: RequirementsLambdaLayer }
-      - { Ref: MtSampleCommonLambdaLayer }
+      - !Ref RequirementsLambdaLayer
+      - !Ref MtSampleCommonLambdaLayer
     environment:
       RDS_HOST: ${self:custom.rdsHost}
       RDS_USER: ${self:custom.rdsUser}
@@ -176,7 +166,6 @@ functions:
       - http:
           path: /list
           method: get
-          cors: true
 
 #--------------------------------------------------------------------------------
 # resources
@@ -210,8 +199,8 @@ resources:
                     - "Fn::Join":
                         - ":"
                         - - "arn:aws:logs"
-                          - { Ref: AWS::Region }
-                          - { Ref: AWS::AccountId }
+                          - !Ref AWS::Region
+                          - !Ref AWS::AccountId
                           - "log-group:/aws/lambda/*:*:*"
                 - Effect: Allow
                   Action:
@@ -235,6 +224,21 @@ resources:
                     - "Fn::Join":
                         - ":"
                         - - "arn:aws:dynamodb"
-                          - { Ref: AWS::Region }
-                          - { Ref: AWS::AccountId }
+                          - !Ref AWS::Region
+                          - !Ref AWS::AccountId
                           - "table/*"
+    parameterApiEndpoint:
+      Type: AWS::SSM::Parameter
+      Properties:
+        Description: デプロイされたステージのAPIエンドポイント
+        Type: String
+        Name: /${self:service}/${self:provider.stage}/apigw/endpoint
+        Value:
+          "Fn::Join":
+            - ""
+            - - "https://"
+              - !Ref ApiGatewayRestApi
+              - ".execute-api."
+              - ${self:provider.region}
+              - ".amazonaws.com/"
+              - ${self:provider.stage}
