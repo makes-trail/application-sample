@@ -12,6 +12,17 @@ Parameters:
   Env:
     Type: String
     Default: dev
+  ApiStage:
+    Type: String
+    Default: ""
+
+#--------------------------------------------------------------------------------
+# Conditions
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/conditions-section-structure.html
+#--------------------------------------------------------------------------------
+Conditions:
+  CreateApiOrigin: !Not
+    - !Equals [!Ref ApiStage, ""]
 
 #--------------------------------------------------------------------------------
 # Resources
@@ -62,6 +73,15 @@ Resources:
             DomainName: !GetAtt S3Bucket.RegionalDomainName
             S3OriginConfig:
               OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudFrontOAI}"
+          - !If
+            - CreateApiOrigin
+            - Id: "ApiGatewayOrigin"
+              DomainName: !Sub "{{resolve:ssm:/${ServiceName}/${ApiStage}/apigw/domain}}"
+              CustomOriginConfig:
+                OriginProtocolPolicy: "https-only"
+                OriginSSLProtocols:
+                  - "TLSv1.2"
+            - !Ref AWS::NoValue
         DefaultRootObject: index.html
         DefaultCacheBehavior:
           TargetOriginId: !Sub "S3Origin-${S3Bucket}"
@@ -75,6 +95,28 @@ Resources:
           CachedMethods:
             - GET
             - HEAD
+        CacheBehaviors:
+          - !If
+            - CreateApiOrigin
+            - PathPattern: !Sub "/${ApiStage}/*"
+              TargetOriginId: "ApiGatewayOrigin"
+              ViewerProtocolPolicy: redirect-to-https
+              ForwardedValues:
+                Headers:
+                  - "Authorization"
+                QueryString: true
+              DefaultTTL: 2
+              MaxTTL: 600
+              MinTTL: 2
+              AllowedMethods:
+                - "GET"
+                - "HEAD"
+                - "OPTIONS"
+                - "PUT"
+                - "POST"
+                - "PATCH"
+                - "DELETE"
+            - !Ref AWS::NoValue
         CustomErrorResponses:
           - ErrorCode: 403
             ErrorCachingMinTTL: 10
