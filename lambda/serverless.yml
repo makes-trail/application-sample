@@ -232,13 +232,11 @@ resources:
       Properties:
         Description: デプロイされたステージのAPIエンドポイント
         Type: String
-        Name: /${self:service}/${self:provider.stage}/apigw/endpoint
+        Name: /${self:service}/${self:provider.stage}/apigw/domain
         Value:
           "Fn::Join":
             - ""
-            - - "https://"
-              - !Ref ApiGatewayRestApi
+            - - !Ref ApiGatewayRestApi
               - ".execute-api."
               - ${self:provider.region}
-              - ".amazonaws.com/"
-              - ${self:provider.stage}
+              - ".amazonaws.com"
