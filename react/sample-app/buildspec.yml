@@ -9,7 +9,7 @@ phases:
   pre_build:
     commands:
       - touch .env
-      - echo REACT_APP_API_ENDPOINT=project_env:${api_endpoint} >> .env
+      - echo REACT_APP_API_ENDPOINT=${api_endpoint} >> .env
       - cat .env
   build:
     commands:
