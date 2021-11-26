@@ -9,12 +9,15 @@ Parameters:
   ServiceName:
     Type: String
     Default: mt-sample
-  Env:
+    Description: Service name
+  EnvName:
     Type: String
     Default: dev
+    Description: Env name
   ApiStage:
     Type: String
     Default: ""
+    Description: API Gateway stage name. If the api not deployed, leave it blank
 
 #--------------------------------------------------------------------------------
 # Conditions
@@ -35,7 +38,7 @@ Resources:
   S3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub "${ServiceName}-${Env}-react-app"
+      BucketName: !Sub "${ServiceName}-${EnvName}-react-app"
       BucketEncryption:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
