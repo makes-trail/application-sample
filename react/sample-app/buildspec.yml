@@ -5,12 +5,11 @@ phases:
       nodejs: 12
     commands:
       - cd ./react/sample-app
-      - npm ci
   pre_build:
     commands:
       - touch .env
       - echo REACT_APP_API_ENDPOINT=${api_endpoint} >> .env
-      - cat .env
+      - npm ci
   build:
     commands:
       - npm run build
