@@ -1,0 +1,18 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      nodejs: 12
+    commands:
+      - cd google-login/amplify-app
+  pre_build:
+    commands:
+      - aws s3 sync s3://${ServiceName}-{EnvName}-react-app-config ./
+      - npm ci
+  build:
+    commands:
+      - npm run build
+  post_build:
+    commands:
+      - cd build
+      - aws s3 sync --delete ./ s3://${ServiceName}-{EnvName}-react-app
