@@ -7,7 +7,7 @@ phases:
       - cd google-login/amplify-app
   pre_build:
     commands:
-      - aws s3 sync s3://${ServiceName}-{EnvName}-react-app-config ./
+      - aws s3 sync s3://${ServiceName}-${EnvName}-react-app-config ./
       - npm ci
   build:
     commands:
@@ -15,4 +15,4 @@ phases:
   post_build:
     commands:
       - cd build
-      - aws s3 sync --delete ./ s3://${ServiceName}-{EnvName}-react-app
+      - aws s3 sync --delete ./ s3://${ServiceName}-${EnvName}-react-app
