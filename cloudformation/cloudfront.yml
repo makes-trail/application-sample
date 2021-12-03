@@ -1,5 +1,5 @@
-AWSTemplateFormatVersion: 2010-09-09
-Description: S3 and CloudFront for static website hosting (OAI Available)
+AWSTemplateFormatVersion: "2010-09-09"
+Description: CloudFront for static website hosting (OAI Available) and API Gateway
 
 #--------------------------------------------------------------------------------
 # Parameters
@@ -63,6 +63,20 @@ Resources:
             Resource: !Sub "arn:aws:s3:::${S3Bucket}/*"
             Principal:
               CanonicalUser: !GetAtt CloudFrontOAI.S3CanonicalUserId
+
+  S3BucketConfig:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${ServiceName}-${EnvName}-react-app-config"
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
 
   # ----------------------------------------#
   # CloudFront
