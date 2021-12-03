@@ -1,0 +1,19 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      nodejs: 12
+    commands:
+      - cd ./react/sample-app
+  pre_build:
+    commands:
+      - touch .env
+      - echo REACT_APP_API_ENDPOINT=${api_endpoint} >> .env
+      - npm ci
+  build:
+    commands:
+      - npm run build
+artifacts:
+  files:
+    - "**/*"
+  base-directory: ./react/sample-app/build
