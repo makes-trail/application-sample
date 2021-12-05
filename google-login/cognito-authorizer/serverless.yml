@@ -60,6 +60,19 @@ resources:
         Type: COGNITO_USER_POOLS
         ProviderARNs:
           - ${ssm:/${self:service}/${self:provider.stage}/cognito/userpool}
+    parameterApiEndpoint:
+      Type: AWS::SSM::Parameter
+      Properties:
+        Description: デプロイされたステージのAPIエンドポイント
+        Type: String
+        Name: /${self:service}/${self:provider.stage}/apigw/domain
+        Value:
+          "Fn::Join":
+            - ""
+            - - !Ref ApiGatewayRestApi
+              - ".execute-api."
+              - ${self:provider.region}
+              - ".amazonaws.com"
     userinfoRole:
       Type: AWS::IAM::Role
       Properties:

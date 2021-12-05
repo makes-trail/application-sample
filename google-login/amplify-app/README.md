@@ -2,45 +2,74 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## 環境構築
 
-In the project directory, you can run:
+Node.jsとnpmをインストールする。
 
-### `npm start`
+1. https://nodejs.org/ja/ からLTSがついているバージョンをダウンロード&インストール
+2. インストールされたか確認
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```
+$ node -v
+$ npm -v
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## 必要なパッケージをインストール
 
-### `npm test`
+npmを使用して依存パッケージを`node_modules`配下にインストールする。
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
+cd amplify-app
+npm install
+```
+
+## 環境変数
+
+アプリ起動時に埋め込む環境変数を`.env`で定義している。
+> `.env`はGit管理に上がらない。ローカルにのみ持っておき、公開しないようにする。
+> ```bash
+> # .env
+> REACT_APP_API_ENDPOINT=__API Gatewayでデプロイされているエンドポイント__
+> ```
+
+Amplifyライブラリが読み込むCognitoユーザープールの設定を`src/amplifyConfig.ts`で定義している。
+
+`amplifyConfig.sample.ts`を参考に`amplifyConfig.ts`を以下の要領で書き換える。
+
+```ts
+const COGNITO_REGION = 'us-west-2';
+const COGNITO_USER_POOL = 'us-west-2_xxxxxx'; // プールID
+const COGNITO_USER_POOL_CLIENT = 'xxxxxx'; // アプリクライアントID
+const COGNITO_DOMAIN_PREFIX = 'xxxxxx'; // ドメインのプレフィックス
+
+const amplifyConfig = {
+  Auth: {
+    region: COGNITO_REGION,
+    userPoolId: COGNITO_USER_POOL,
+    userPoolWebClientId: COGNITO_USER_POOL_CLIENT,
+    oauth: {
+      domain: `${COGNITO_DOMAIN_PREFIX}.auth.${COGNITO_REGION}.amazoncognito.com`,
+      scope: [
+        'openid',
+        'profile'
+      ],
+      redirectSignIn: 'https://xxxxxx.cloudfront.net', // アプリクライアントのコールバックURL
+      redirectSignOut: 'https://xxxxxx.cloudfront.net', // アプリクライアントのサインアウトURL
+      responseType: 'code'
+    }
+  }
+};
+
+export default amplifyConfig;
+```
+
+## Reactアプリの起動とビルド
+
+### `npm run start`
+
+アプリをローカルホストで起動する。（`.env`の環境変数が読まれる）
 
 ### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+アプリを`build`配下にビルドする。（`.env`の環境変数が読まれる）\
+このコマンドで`build`配下に生成されたファイルたちをS3にアップロードして静的ホスティングする。
