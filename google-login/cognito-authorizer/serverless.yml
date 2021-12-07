@@ -1,0 +1,104 @@
+service: mt-sample
+
+provider:
+  name: aws
+  runtime: python3.8
+  stage: ${opt:stage, self:custom.defaultStage}
+  region: us-west-2
+  stackName: ${self:service}-${self:provider.stage}-serverless
+  apiName: ${self:service}-${self:provider.stage}-api
+  endpointType: REGIONAL
+  logRetentionInDays: 30
+  versionFunctions: false
+  deploymentBucket:
+    name: ${self:service}-${self:provider.stage}-lambda-deployment
+    serverSideEncryption: AES256
+
+#--------------------------------------------------------------------------------
+# variables
+# https://www.serverless.com/framework/docs/providers/aws/guide/variables/
+#--------------------------------------------------------------------------------
+custom:
+  defaultStage: google-login
+
+#--------------------------------------------------------------------------------
+# functions
+# https://www.serverless.com/framework/docs/providers/aws/guide/functions/
+#--------------------------------------------------------------------------------
+functions:
+  userinfo:
+    handler: main.handler
+    description: 認可されたユーザのユーザ情報を返す
+    package:
+      patterns:
+        - main.py
+    timeout: 30
+    role: userinfoRole
+    events:
+      - http:
+          path: /userinfo
+          method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: !Ref apiGatewayCognitoAuthorizer
+
+#--------------------------------------------------------------------------------
+# resources
+# https://www.serverless.com/framework/docs/providers/aws/guide/resources/
+#--------------------------------------------------------------------------------
+resources:
+  Resources:
+    apiGatewayCognitoAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      DependsOn:
+        - ApiGatewayRestApi
+      Properties:
+        Name: ApiGatewayCognitoAuthorizer
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        IdentitySource: method.request.header.Authorization
+        Type: COGNITO_USER_POOLS
+        ProviderARNs:
+          - ${ssm:/${self:service}/${self:provider.stage}/cognito/userpool}
+    parameterApiEndpoint:
+      Type: AWS::SSM::Parameter
+      Properties:
+        Description: デプロイされたステージのAPIエンドポイント
+        Type: String
+        Name: /${self:service}/${self:provider.stage}/apigw/domain
+        Value:
+          "Fn::Join":
+            - ""
+            - - !Ref ApiGatewayRestApi
+              - ".execute-api."
+              - ${self:provider.region}
+              - ".amazonaws.com"
+    userinfoRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: ${self:service}-${self:provider.stage}-userinfo-lambda-role
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: ${self:service}-${self:provider.stage}-userinfo-lambda-policy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - logs:CreateLogGroup
+                    - logs:CreateLogStream
+                    - logs:PutLogEvents
+                  Resource:
+                    - "Fn::Join":
+                        - ":"
+                        - - "arn:aws:logs"
+                          - !Ref AWS::Region
+                          - !Ref AWS::AccountId
+                          - "log-group:/aws/lambda/*:*:*"
