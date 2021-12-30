@@ -63,6 +63,20 @@ layers:
     compatibleRuntimes:
       - python3.8
     retain: false
+  MtSampleDatabase:
+    name: ${self:service}-${self:provider.stage}-database-layer
+    package:
+      artifact: layers/artifact/mt_sample_database.zip
+    compatibleRuntimes:
+      - python3.8
+    retain: false
+  MtSampleDomain:
+    name: ${self:service}-${self:provider.stage}-domain-layer
+    package:
+      artifact: layers/artifact/mt_sample_domain.zip
+    compatibleRuntimes:
+      - python3.8
+    retain: false
 
 #--------------------------------------------------------------------------------
 # functions
@@ -149,8 +163,8 @@ functions:
       artifact: functions/artifact/list_books.zip
     description: RDSに保存されている全ての書籍情報をリストにして返す
     layers:
-      - !Ref RequirementsLambdaLayer
-      - !Ref MtSampleCommonLambdaLayer
+      - !Ref MtSampleDatabaseLambdaLayer
+      - !Ref MtSampleDomainLambdaLayer
     environment:
       RDS_HOST: ${self:custom.rdsHost}
       RDS_USER: ${self:custom.rdsUser}
@@ -166,6 +180,41 @@ functions:
       - http:
           path: /list
           method: get
+  search-book:
+    handler: main.handler
+    package:
+      artifact: functions/artifact/search_book.zip
+    description: ISBNをもとに書籍APIから取得した書籍情報を返す
+    layers:
+      - !Ref MtSampleDomainLambdaLayer
+    events:
+      - http:
+          path: /search/{isbn}
+          method: get
+  save-book:
+    handler: main.handler
+    package:
+      artifact: functions/artifact/save_book.zip
+    description: 書籍情報をRDSへ保存する
+    layers:
+      - !Ref MtSampleDatabaseLambdaLayer
+      - !Ref MtSampleDomainLambdaLayer
+    environment:
+      RDS_HOST: ${self:custom.rdsHost}
+      RDS_USER: ${self:custom.rdsUser}
+      RDS_PASSWORD: ${self:custom.rdsPassword}
+      RDS_DATABASE: ${self:custom.rdsDatabase}
+      DYNAMODB_TABLE: ${self:custom.dynamodbTable}
+    vpc:
+      securityGroupIds:
+        - ${self:custom.lambdaSecurityGroup}
+      subnetIds:
+        - ${self:custom.subnetA}
+        - ${self:custom.subnetB}
+    events:
+      - http:
+          path: /save
+          method: put
 
 #--------------------------------------------------------------------------------
 # resources
