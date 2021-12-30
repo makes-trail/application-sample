@@ -8,8 +8,7 @@ Base = declarative_base()
 
 class Database:
     def __init__(self, url: str) -> None:
-        self._url = url
-        self._engine = create_engine(url)
+        self._engine = create_engine(url, connect_args={"connect_timeout": 10})
 
     def get_session(self) -> scoped_session:
         try:

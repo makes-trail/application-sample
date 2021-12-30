@@ -8,7 +8,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from .book_dto import BookDTO
 
 
-class BookDatasource(BookRepository):
+class BookRepositoryImpl(BookRepository):
     def __init__(self, session: scoped_session):
         self._session = session
 

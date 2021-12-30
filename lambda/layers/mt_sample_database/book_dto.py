@@ -1,7 +1,7 @@
+from mt_sample_domain.book import Book
 from sqlalchemy import Column, String
 
 from mt_sample_database.database import Base
-from mt_sample_domain.book import Book
 
 
 class BookDTO(Base):
@@ -17,4 +17,4 @@ class BookDTO(Base):
 
     @staticmethod
     def from_entity(book: Book) -> "BookDTO":
-        return BookDTO(book.isbn, book.title, book.author, book.publisher, book.cover)
+        return BookDTO(isbn=book.isbn, title=book.title, author=book.author, publisher=book.publisher, cover=book.cover)
