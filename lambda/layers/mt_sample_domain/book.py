@@ -13,8 +13,12 @@ class Book:
         self.publisher = publisher
         self.cover = cover
 
-    def serialize(self) -> dict:
+    def to_dict(self) -> dict:
         return self.__dict__
+
+    @staticmethod
+    def from_dict(d: dict) -> "Book":
+        return Book(**d)
 
     @classmethod
     def search_by_isbn(cls, isbn: str) -> "Book":
