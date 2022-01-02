@@ -69,29 +69,6 @@ layers:
 # https://www.serverless.com/framework/docs/providers/aws/guide/functions/
 #--------------------------------------------------------------------------------
 functions:
-  list-books:
-    handler: main.handler
-    package:
-      artifact: functions/artifact/list_books.zip
-    description: RDSに保存されている全ての書籍情報をリストにして返す
-    layers:
-      - !Ref MtSampleDatabaseLambdaLayer
-      - !Ref MtSampleDomainLambdaLayer
-    environment:
-      RDS_HOST: ${self:custom.rdsHost}
-      RDS_USER: ${self:custom.rdsUser}
-      RDS_PASSWORD: ${self:custom.rdsPassword}
-      RDS_DATABASE: ${self:custom.rdsDatabase}
-    vpc:
-      securityGroupIds:
-        - ${self:custom.lambdaSecurityGroup}
-      subnetIds:
-        - ${self:custom.subnetA}
-        - ${self:custom.subnetB}
-    events:
-      - http:
-          path: /list
-          method: get
   search-book:
     handler: main.handler
     package:
@@ -126,6 +103,29 @@ functions:
       - http:
           path: /save
           method: put
+  list-books:
+    handler: main.handler
+    package:
+      artifact: functions/artifact/list_books.zip
+    description: RDSに保存されている全ての書籍情報をリストにして返す
+    layers:
+      - !Ref MtSampleDatabaseLambdaLayer
+      - !Ref MtSampleDomainLambdaLayer
+    environment:
+      RDS_HOST: ${self:custom.rdsHost}
+      RDS_USER: ${self:custom.rdsUser}
+      RDS_PASSWORD: ${self:custom.rdsPassword}
+      RDS_DATABASE: ${self:custom.rdsDatabase}
+    vpc:
+      securityGroupIds:
+        - ${self:custom.lambdaSecurityGroup}
+      subnetIds:
+        - ${self:custom.subnetA}
+        - ${self:custom.subnetB}
+    events:
+      - http:
+          path: /list
+          method: get
 
 #--------------------------------------------------------------------------------
 # resources
