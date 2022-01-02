@@ -116,7 +116,6 @@ functions:
       RDS_USER: ${self:custom.rdsUser}
       RDS_PASSWORD: ${self:custom.rdsPassword}
       RDS_DATABASE: ${self:custom.rdsDatabase}
-      DYNAMODB_TABLE: ${self:custom.dynamodbTable}
     vpc:
       securityGroupIds:
         - ${self:custom.lambdaSecurityGroup}
@@ -167,11 +166,8 @@ resources:
                   Action:
                     - ec2:CreateNetworkInterface
                     - ec2:DescribeNetworkInterfaces
+                    - ec2:DetachNetworkInterface
                     - ec2:DeleteNetworkInterface
-                  Resource: "*"
-                - Effect: Allow
-                  Action:
-                    - lambda:InvokeFunction
                   Resource: "*"
     parameterApiEndpoint:
       Type: AWS::SSM::Parameter
