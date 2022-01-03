@@ -2,8 +2,7 @@ from typing import List, Optional
 
 from mt_sample_database.book_repository import BookRepositoryImpl
 from mt_sample_database.database import Database
-
-from .book import Book
+from mt_sample_domain.book import Book
 
 
 class BookQueryService:

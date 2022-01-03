@@ -1,7 +1,7 @@
 import json
 import os
 
-from mt_sample_domain.book_query_service import BookQueryService
+from mt_sample_usecase.book_query_service import BookQueryService
 
 
 def handler(event: dict, context: dict) -> dict:

@@ -63,6 +63,13 @@ layers:
     compatibleRuntimes:
       - python3.8
     retain: false
+  MtSampleUsecase:
+    name: ${self:service}-${self:provider.stage}-usecase-layer
+    package:
+      artifact: layers/artifact/mt_sample_usecase.zip
+    compatibleRuntimes:
+      - python3.8
+    retain: false
 
 #--------------------------------------------------------------------------------
 # functions
@@ -88,6 +95,7 @@ functions:
     layers:
       - !Ref MtSampleDatabaseLambdaLayer
       - !Ref MtSampleDomainLambdaLayer
+      - !Ref MtSampleUsecaseLambdaLayer
     environment:
       RDS_HOST: ${self:custom.rdsHost}
       RDS_USER: ${self:custom.rdsUser}
@@ -111,6 +119,7 @@ functions:
     layers:
       - !Ref MtSampleDatabaseLambdaLayer
       - !Ref MtSampleDomainLambdaLayer
+      - !Ref MtSampleUsecaseLambdaLayer
     environment:
       RDS_HOST: ${self:custom.rdsHost}
       RDS_USER: ${self:custom.rdsUser}
