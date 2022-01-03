@@ -1,5 +1,6 @@
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import SearchIcon from '@material-ui/icons/Search';
@@ -30,26 +31,27 @@ const Home: React.FC = () => {
           <h2 className="font-yumin">サンプル版</h2>
         </Box>
         <Box m={2}>
-          <Button
-            variant="outlined"
-            size="large"
-            startIcon={<SearchIcon />}
-            component={Link}
-            to="/search-book"
+          <ButtonGroup
+            orientation="vertical"
+            aria-label="vertical outlined button group"
           >
-            本を探す
-          </Button>
-        </Box>
-        <Box m={2}>
-          <Button
-            variant="outlined"
-            size="large"
-            component={Link}
-            startIcon={<LibraryBooksIcon />}
-            to="/list-books"
-          >
-            図書館に入る
-          </Button>
+            <Button
+              size="large"
+              startIcon={<SearchIcon />}
+              component={Link}
+              to="/search-book"
+            >
+              本を探す
+            </Button>
+            <Button
+              size="large"
+              component={Link}
+              startIcon={<LibraryBooksIcon />}
+              to="/list-books"
+            >
+              図書館に入る
+            </Button>
+          </ButtonGroup>
         </Box>
       </ThemeProvider>
     </div>
