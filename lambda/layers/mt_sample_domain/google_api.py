@@ -31,7 +31,7 @@ class GoogleApiBook:
             volume_info = data["items"][0]["volumeInfo"]
             title = volume_info["title"]
             subtitle = volume_info.get("subttitle", "")
-            authors = volume_info["authors"]
+            authors = volume_info.get("authors", "")
             thumbnail = ""
             if volume_info.get("imageLinks") is not None:
                 thumbnail = volume_info["imageLinks"].get("thumbnail", "")
