@@ -1,5 +1,8 @@
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
+import SearchIcon from '@material-ui/icons/Search';
 import React, { useState } from 'react';
-import { useHistory, Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 const SearchBook: React.FC = () => {
   const history = useHistory();
@@ -34,7 +37,16 @@ const SearchBook: React.FC = () => {
           onChange={(e) => setIsbn(e.target.value)}
         />
         <span className="text-error font-yumin">{errorMessage}</span>
-        <button type="submit" className="font-yumin react-btn">検索</button>
+        <Box m={2}>
+          <Button
+            variant="outlined"
+            size="large"
+            startIcon={<SearchIcon />}
+            type="submit"
+          >
+            検索
+          </Button>
+        </Box>
       </form>
       <Link to={"/"}>
         <p className="font-yumin">Homeに戻る</p>

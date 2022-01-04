@@ -3,6 +3,7 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 > 参考
+>
 > - [[YouTube] Full Modern React Tutorial (The Net Ninja)](https://www.youtube.com/playlist?list=PL4cUxeGkcC9gZD-Tvwfod2gaISzfRiP9d)
 > - [[YouTube] Material UI Tutorial (The Net Ninja)](https://www.youtube.com/playlist?list=PL4cUxeGkcC9gjxLvV4VEkZ6H6H4yWuS58)
 
@@ -13,16 +14,16 @@ Node.jsとnpmをインストールする。
 1. https://nodejs.org/ja/ からLTSがついているバージョンをダウンロード&インストール
 2. インストールされたか確認
 
-```
-$ node -v
-$ npm -v
+```bash
+node -v
+npm -v
 ```
 
 ## 必要なパッケージをインストール
 
 npmを使用してパッケージを`/node_modules`配下にインストールする。
 
-```
+```bash
 cd react
 cd sample-app
 npm install
@@ -32,25 +33,27 @@ npm install
 
 [Prism](https://stoplight.io/open-source/prism)を用いて、デモ用のAPIモックサーバをローカルに立てる。
 
-```
+```bash
 npx prism mock ./mock/mt-sample-api.yml --port 3333
 ```
 
-ブラウザから http://localhost:3333/fetch/9784905325055 にアクセスして、JSONを取得できることを確認。
+ブラウザから <http://localhost:3333/search/9784905325055> にアクセスして、JSONを取得できることを確認。
 
 ## Reactアプリを起動
 
 Prismで立てたAPIモックはそのままの状態で、Reactアプリを起動する。（ローカル開発モード）
-```
+
+```bash
 npm run start:dev
 ```
 
-http://localhost:3000 が自動で開く。
+<http://localhost:3000> が自動で開く。
 
 ## 環境変数
 
 アプリ起動時に埋め込む環境変数を`.env.development`(ローカル開発用)と`.env`(AWS開発環境用)で定義している。
 > `.env`はGit管理に上がらない。ローカルにのみ持っておき、公開しないようにする。
+>
 > ```bash
 > # .env
 > REACT_APP_API_ENDPOINT=__API Gatewayでデプロイされているエンドポイント__
@@ -68,7 +71,6 @@ AWS開発環境用モードでアプリを起動する。（`.env`の環境変�
 
 AWS開発環境用のアプリを`/build`配下にビルドする。（`.env.development`の環境変数が読まれる）\
 このコマンドで`/build`配下に生成されたファイルたちをS3にアップロードして静的ホスティングする。
-
 
 ## Available Scripts
 

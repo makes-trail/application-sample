@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import http from '../common/http';
-import { Book } from '../types/Book';
 import BookCard from '../components/BookCard';
+import { Book } from '../types/Book';
 
 const ListBooks: React.FC = () => {
   const [books, setBooks] = useState<Array<Book>>();
@@ -37,7 +37,7 @@ const ListBooks: React.FC = () => {
       <Container>
         <Grid container justify="center" spacing={3}>
           {books && books.map(book => (
-            <Grid item key={book.isbn} xs={12} sm={6}>
+            <Grid item key={book.isbn} xs={12} sm={6} md={4}>
               <BookCard book={book} />
             </Grid>
           ))}
