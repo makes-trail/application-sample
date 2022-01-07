@@ -2,11 +2,13 @@ import json
 import os
 
 from mt_sample_domain.book import Book
+from mt_sample_interface.log import get_logger
 from mt_sample_usecase.book_query_service import BookQueryService
 
 
 def handler(event: dict, context: dict) -> dict:
-    print(event)
+    logger = get_logger(__name__)
+    logger.info(event)
 
     rds_host = os.environ.get("RDS_HOST")
     rds_user = os.environ.get("RDS_USER")
@@ -21,11 +23,8 @@ def handler(event: dict, context: dict) -> dict:
         saved_book = query_service.save_book(book)
         return {
             "statusCode": 200,
-            "body": json.dumps(saved_book.to_dict(), ensure_ascii=False)
+            "body": json.dumps(saved_book.to_dict(), ensure_ascii=False),
         }
-    except Exception as e:
-        print(e)
-        return {
-            "statusCode": 500,
-            "body": json.dumps("ERROR")
-        }
+    except Exception:
+        logger.exception("An unexcepted error occurred while saving book")
+        return {"statusCode": 500, "body": json.dumps("ERROR")}
