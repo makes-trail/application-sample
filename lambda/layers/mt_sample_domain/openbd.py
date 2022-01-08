@@ -1,6 +1,9 @@
+from logging import getLogger
 from typing import Final, Optional
 
 import requests
+
+logger = getLogger(__name__)
 
 
 class OpenbdBook:
@@ -22,7 +25,9 @@ class OpenbdBook:
         try:
             res = requests.get(url, headers=headers, timeout=10.0)
             data = res.json()
+            logger.info(data)
         except Exception as e:
+            logger.exception("Failed to fetch data from openBD API")
             raise e
 
         if data[0] is None:
