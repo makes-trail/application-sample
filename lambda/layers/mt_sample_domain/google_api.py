@@ -26,9 +26,9 @@ class GoogleApiBook:
             res = requests.get(url, headers=headers, timeout=10.0)
             data = res.json()
             logger.info(data)
-        except Exception as e:
+        except Exception:
             logger.exception("Failed to fetch data from openBD API")
-            raise e
+            raise
 
         if data["totalItems"] == 0:
             return None

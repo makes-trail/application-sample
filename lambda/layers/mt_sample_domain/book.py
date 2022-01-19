@@ -1,6 +1,10 @@
+from logging import getLogger
+
 from .exception import BookNotFoundException
 from .google_api import GoogleApiBook
 from .openbd import OpenbdBook
+
+logger = getLogger(__name__)
 
 
 class Book:
@@ -25,8 +29,9 @@ class Book:
         try:
             open_bd_book = OpenbdBook.search_by_isbn(isbn)
             google_api_book = GoogleApiBook.search_by_isbn(isbn)
-        except Exception as e:
-            raise e
+        except Exception:
+            logger.exception("Failed to fetch data from APIs")
+            raise
 
         if open_bd_book is None:
             if google_api_book is None:
