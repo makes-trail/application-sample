@@ -1,3 +1,4 @@
+from logging import getLogger
 from typing import List, Optional
 
 from mt_sample_domain.book import Book
@@ -6,6 +7,8 @@ from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm.exc import NoResultFound
 
 from .book_dto import BookDTO
+
+logger = getLogger(__name__)
 
 
 class BookRepositoryImpl(BookRepository):
@@ -17,8 +20,9 @@ class BookRepositoryImpl(BookRepository):
             book_dto = self._session.query(BookDTO).filter_by(isbn=isbn).one()
         except NoResultFound:
             return None
-        except Exception as e:
-            raise e
+        except Exception:
+            logger.exception("An unexcepted error occurred")
+            raise
         return book_dto.to_entity()
 
     def select_all_order_by_isbn(self) -> List[Book]:
@@ -26,16 +30,18 @@ class BookRepositoryImpl(BookRepository):
             book_dto_list = self._session.query(BookDTO).order_by(BookDTO.isbn).all()
         except NoResultFound:
             return []
-        except Exception as e:
-            raise e
+        except Exception:
+            logger.exception("An unexcepted error occurred")
+            raise
         return [dto.to_entity() for dto in book_dto_list]
 
     def insert(self, book: Book) -> None:
         book_dto = BookDTO.from_entity(book)
         try:
             self._session.add(book_dto)
-        except Exception as e:
-            raise e
+        except Exception:
+            logger.exception("An unexcepted error occurred")
+            raise
 
     def update(self, book: Book) -> None:
         book_dto = BookDTO.from_entity(book)
@@ -45,11 +51,13 @@ class BookRepositoryImpl(BookRepository):
             _book.author = book_dto.author
             _book.publisher = book_dto.publisher
             _book.cover = book_dto.cover
-        except Exception as e:
-            raise e
+        except Exception:
+            logger.exception("An unexcepted error occurred")
+            raise
 
     def delete_by_isbn(self, isbn: str) -> None:
         try:
             self._session.query(BookDTO).filter_by(isbn=isbn).delete()
-        except Exception as e:
-            raise e
+        except Exception:
+            logger.exception("An unexcepted error occurred")
+            raise

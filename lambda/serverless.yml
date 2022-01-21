@@ -4,7 +4,6 @@ provider:
   name: aws
   runtime: python3.8
   stage: ${opt:stage, self:custom.defaultStage}
-  profile: ${opt:profile, self:custom.defaultProfile}
   region: us-west-2
   stackName: ${self:service}-${self:provider.stage}-serverless
   apiName: ${self:service}-${self:provider.stage}-api
@@ -31,7 +30,6 @@ package:
 #--------------------------------------------------------------------------------
 custom:
   defaultStage: dev
-  defaultProfile: default
   # VPC
   vpcId: ${ssm:vpc}
   subnetA: ${ssm:private-subnet-a}
@@ -63,6 +61,13 @@ layers:
     compatibleRuntimes:
       - python3.8
     retain: false
+  MtSampleInterface:
+    name: ${self:service}-${self:provider.stage}-interface-layer
+    package:
+      artifact: layers/artifact/mt_sample_interface.zip
+    compatibleRuntimes:
+      - python3.8
+    retain: false
   MtSampleUsecase:
     name: ${self:service}-${self:provider.stage}-usecase-layer
     package:
@@ -83,6 +88,7 @@ functions:
     description: ISBNをもとに書籍APIから取得した書籍情報を返す
     layers:
       - !Ref MtSampleDomainLambdaLayer
+      - !Ref MtSampleInterfaceLambdaLayer
     events:
       - http:
           path: /search/{isbn}
@@ -95,6 +101,7 @@ functions:
     layers:
       - !Ref MtSampleDatabaseLambdaLayer
       - !Ref MtSampleDomainLambdaLayer
+      - !Ref MtSampleInterfaceLambdaLayer
       - !Ref MtSampleUsecaseLambdaLayer
     environment:
       RDS_HOST: ${self:custom.rdsHost}
@@ -119,6 +126,7 @@ functions:
     layers:
       - !Ref MtSampleDatabaseLambdaLayer
       - !Ref MtSampleDomainLambdaLayer
+      - !Ref MtSampleInterfaceLambdaLayer
       - !Ref MtSampleUsecaseLambdaLayer
     environment:
       RDS_HOST: ${self:custom.rdsHost}

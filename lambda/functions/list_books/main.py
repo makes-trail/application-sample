@@ -1,11 +1,13 @@
 import json
 import os
 
+from mt_sample_interface.log import get_logger
 from mt_sample_usecase.book_query_service import BookQueryService
 
 
 def handler(event: dict, context: dict) -> dict:
-    print(event)
+    logger = get_logger(__name__)
+    logger.info(event)
 
     rds_host = os.environ.get("RDS_HOST")
     rds_user = os.environ.get("RDS_USER")
@@ -17,13 +19,7 @@ def handler(event: dict, context: dict) -> dict:
         query_service = BookQueryService(db_url)
         books = query_service.select_books_order_by_isbn()
         response = [book.to_dict() for book in books]
-        return {
-            "statusCode": 200,
-            "body": json.dumps(response, ensure_ascii=False)
-        }
-    except Exception as e:
-        print(e)
-        return {
-            "statusCode": 500,
-            "body": json.dumps("ERROR")
-        }
+        return {"statusCode": 200, "body": json.dumps(response, ensure_ascii=False)}
+    except Exception:
+        logger.exception("An unexcepted error occurred while listing book")
+        return {"statusCode": 500, "body": json.dumps("ERROR")}

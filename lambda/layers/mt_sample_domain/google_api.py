@@ -1,6 +1,9 @@
+from logging import getLogger
 from typing import Final, List, Optional
 
 import requests
+
+logger = getLogger(__name__)
 
 
 class GoogleApiBook:
@@ -22,8 +25,10 @@ class GoogleApiBook:
         try:
             res = requests.get(url, headers=headers, timeout=10.0)
             data = res.json()
-        except Exception as e:
-            raise e
+            logger.info(data)
+        except Exception:
+            logger.exception("Failed to fetch data from openBD API")
+            raise
 
         if data["totalItems"] == 0:
             return None
