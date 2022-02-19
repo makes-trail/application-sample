@@ -4,16 +4,15 @@ phases:
     runtime-versions:
       nodejs: 12
     commands:
-      - cd ./react/sample-app
+      - cd react/sample-app
   pre_build:
     commands:
-      - touch .env
-      - echo REACT_APP_API_ENDPOINT=${api_endpoint} >> .env
+      - aws s3 sync s3://${ServiceName}-${EnvName}-react-app-config ./
       - npm ci
   build:
     commands:
       - npm run build
-artifacts:
-  files:
-    - "**/*"
-  base-directory: ./react/sample-app/build
+  post_build:
+    commands:
+      - cd build
+      - aws s3 sync --delete ./ s3://${ServiceName}-${EnvName}-react-app
