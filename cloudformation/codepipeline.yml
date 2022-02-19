@@ -56,14 +56,14 @@ Resources:
                 FullRepositoryId: makes-trail/application-sample
                 ConnectionArn: !Ref ConnectionArn
                 BranchName: !Ref BranchName
-                DetectChanges: false
+                DetectChanges: true
               InputArtifacts: []
               OutputArtifacts:
                 - Name: Source
         - Name: Approval
           Actions:
             - Name: Approval
-              RunOrder: 2
+              RunOrder: 1
               ActionTypeId:
                 Category: Approval
                 Owner: AWS
@@ -72,7 +72,7 @@ Resources:
         - Name: Build
           Actions:
             - Name: Build
-              RunOrder: 3
+              RunOrder: 1
               ActionTypeId:
                 Category: Build
                 Owner: AWS
